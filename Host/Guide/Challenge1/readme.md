@@ -11,17 +11,23 @@ be showcasing how to migrate your traditional SQL Server (SMP) to Azure Synapse 
 ## Environment Setup
 
 WWI runs their existing database platforms on-premise with SQL Server 2017.  There are two databases samples for WWI.  The first one is for their Line of Business application (OLTP) and the second
-is for their data warehouse (OLAP).  You will need to setup both environments as our starting point in the migration.
+is for their data warehouse (OLAP).  You will need to setup both environments as our starting point in the migration.  Recommended to have students start Challenge 0 with setup of SQL VM before starting any presentations. This spin-up time is approx 30 mins and this will give you sufficient time to kick-off the event while their VMs are being setup.
 
-1. If you do not have a on-premise SQL Server 2017, you can provision a Azure Virtual Machine running SQL Server 2017 using this [Step by step guidance](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sql/virtual-machines-windows-portal-sql-server-provision#1-configure-basic-settings)
-2. Download both WWI databases (Enterprise Edition) to your on-premise SQL server or Azure VM you have just provisioned. [Download Link](https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0). 
+1. If you do not have a on-premise SQL Server 2017, you can provision a Azure Virtual Machine running SQL Server 2017 using this [Step by step guidance](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sql/virtual-machines-windows-portal-sql-server-provision#1-configure-basic-settings) Recommended size is DS12
+    * Turn off IE Enhanced Security Config in [Server Manager](https://medium.com/tensult/disable-internet-explorer-enhanced-security-configuration-in-windows-server-2019-a9cf5528be65)
+    * Go to Windows Firewall internal to the VM and open a inbound port to 1433. This is required for SSIS Runtime to access the database.
+    * Go to Network Security Group (Azure) and setup inbound ports with 1433
+2. Download both WWI databases (Enterprise Edition) to your on-premise SQL server or Azure VM you have just provisioned. [Download Link](https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0). Go to the section called, "SQL Server 2016 SP1 (or later) Any Edition aside from LocalDB; SQL Server 2016 RTM (or later) Evaluation/Developer/Enterprise Edition" and download the two bullets under this heading.
 >The file names are WideWorldImporters-Full.bak and WideWorldImportersDW-Full.bak.  
 >These two files are the OLTP and OLAP databases respectively.
+> Copy these two files to this directory on the Virtual machine C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER\MSSQL\Backup
 3. Follow this [Install and Configuration Instrution for the OLTP database](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-oltp-install-configure?view=sql-server-ver15)
 4. Follow this [Install and Configuration Instrution for the OLAP database](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-dw-install-configure?view=sql-server-ver15)
 5. Review the database catalog on the data warehouse for familiarity of the schema [Reference document](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-dw-database-catalog?view=sql-server-ver15)
 6. Review ETL workflow to understand the data flow and architecture [Reference document](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-perform-etl?view=sql-server-ver15)
-7. Create an Azure Synapse Analytics Data Warehouse with the lowest DWU [Step by step guidance](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/create-data-warehouse-portal)
+7. Create an Azure Synapse Analytics Data Warehouse with the lowest DWU [Step by step guidance](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/create-data-warehouse-portal) Recommended size of Azure Synapse is DW100.
+    * Add your client IP address to the firewall for Synapse
+    * Ensure you are leveraging SQL Server Management STudio 18.x or higher
 
 ## Tools
 
@@ -44,8 +50,8 @@ There will be four different object types we'll migrate:
 
 * Database Schema
 * Database code (Store Procedure, Function, Triggers, etc)
-* Data migration
 * SSIS code set refactor
+* Data migration (with SSIS)
 
 Guidelines will be provided below but you will have to determine how best to migrate.  At the end of the migration compare your 
 end state to the one we've published into the "Host/Solutions/Challenge1" folder.  The detailed migration guide below is here for things to consider during your migration. Please follow this [outline](https://techcommunity.microsoft.com/t5/datacat/migrating-data-to-azure-sql-data-warehouse-in-practice/ba-p/305355) and cross-reference it
@@ -77,7 +83,7 @@ SELECT  t.[name], c.[name], c.[system_type_id], c.[user_type_id], y.[is_user_def
 	JOIN sys.columns c on t.[object_id]    = c.[object_id]
 	JOIN sys.types   y on c.[user_type_id] = y.[user_type_id]
 	WHERE y.[name] IN ('geography','geometry','hierarchyid','image','text','ntext','sql_variant','timestamp','xml')
-	AND  y.[is_user_defined] = 1;
+	OR  y.[is_user_defined] = 1;
 ```
 6. Review IDENTITY article to ensure surrogate keys are in the right sequence [Reference document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-identity)
     
@@ -103,7 +109,16 @@ There are three patterns you can reuse across all scripts in the same family (Di
     2. GetLastETLCutoffTime -- @@RowCount not supported
 4. Rewrite Function for Date Dimension Table
 
-### Data Migration
+### SSIS Job Refactor
+Data movement in first lab will be execution of DailyETLMDWLC.ispac job in Azure Data Factory SSIS Runtime.  This lab will reuse data pipelines to minimize migration costs.
+As data volumes increase, these jobs will need to leverage a MPP platform like Databricks, Synapse, HDInsight to transform the data at scale.  This will be done in a future lab.
+
+1. Open SSIS package and change Source and Destination database connections. Change the login from Windows Auth to SQL Auth
+1. Update each mapping that required DDL changes.
+1. Unit test the jobs in SSDT before deploying them to SSIS Runtime to ensure no errors
+1. Refactoring SSIS jobs are not a success criteria in this hack.  Please provide them the ispac package from the library when they complete deploying the stored procedures.  Steer them away from using BCP to migrate the data rather provide them the SSIS package ask them to run it in ADF SSIS Runtime for data migration.  Instruction below on BCP are informational for coaches.
+
+### Data Migration (BCP) -- Optional
 
 There are numerous strategies and tools to migrate your data from on-premise to Azure. [Reference document](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/design-elt-data-loading) 
 
@@ -115,19 +130,13 @@ machine where the text files reside.  The user name and password will need to be
 2. Create BCP Scripts for each dimension, staging and fact table.  Those DDL scripts where you modified the columns will require you to define the columns to extract
 3. Execute BCP scripts as a batch file.  Place file in the same diretory as the flat files and open a command prompt and go to this directoy.  Run the batch file
 4. Create BCP Scripts to import the data in Azure Synapse Analytics.  Due to low data volume there is no need to first migrate them to Azure
-5. Review Data Skew of Distributed Tables to see if your distribution keys are accurate [Reference document](https://github.com/rgl/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-manage-distributed-data-skew.md)
 
-### SSIS Job 
+### Azure Data Factory SSIS Runtime
+1. Setup your SSIS job following these instructions. [Reference document](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
+1. Update Configuration Settings in SSIS package for source and target[Reference Document](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
+1. Execute DailyETL Package and monitor it for success
+1. Review Data Skew of Distributed Tables to see if your distribution keys are accurate [Reference document](https://github.com/rgl/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-manage-distributed-data-skew.md)
 
-Data movement in first lab will be execution of Daily.ETL.ispac job in Azure Data Factory SSIS Runtime.  This lab will reuse data pipelines to minimize migration costs.
-As data volumes increase, these jobs will need to leverage a MPP platform like Databricks, Synapse, HDInsight to transform the data at scale.  This will be done in a future lab.
-Setup your SSIS job following these instructions. [Reference document](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
-
-1. Open SSIS package and change Source and Destination database connections. Change the login from Windows Auth to SQL Auth
-2. Update each mapping that required DDL changes.
-3. Unit test the jobs in SSDT before deploying them to SSIS Runtime to ensure no errors
-
-## LOAD DATA
 
 Congratulations!!! The migration is complete.  Run your SSIS jobs to load data from OLTP to OLAP data warehouse.  You might want to create a load control table to setup incremental loads.  This will validate you've completed all steps successfully.  Compare the results of the WWI OLAP database vs. the one you've migrated into Azure Synapse Analytics.
 
