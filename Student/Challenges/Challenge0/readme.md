@@ -39,8 +39,8 @@ The objective of this lab is to setup your on-premise data warehouse environment
 WWI runs their existing database platforms on-premise with SQL Server 2017.  There are two databases samples for WWI.  The first one is for their Line of Business application (OLTP) and the second
 is for their data warehouse (OLAP).  You will need to setup both environments as our starting point in the migration.
 
-1. If you do not have a on-premise SQL Server 2017, you can provision a Azure Virtual Machine running SQL Server 2017 using this [Step by step guidance](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sql/virtual-machines-windows-portal-sql-server-provision#1-configure-basic-settings) Recommended size is DS12
-    * Turn off IE Enhanced Security Config in [Server Manager](https://medium.com/tensult/disable-internet-explorer-enhanced-security-configuration-in-windows-server-2019-a9cf5528be65)
+1. If you do not have a on-premise SQL Server 2017, you can provision a Azure Virtual Machine running SQL Server 2017 using this [Step by step guidance](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sql/virtual-machines-windows-portal-sql-server-provision) Recommended size is DS12
+    * Turn off IE Enhanced Security Configon VM in [Server Manager](https://medium.com/tensult/disable-internet-explorer-enhanced-security-configuration-in-windows-server-2019-a9cf5528be65)
     * Go to Windows Firewall internal to the VM and open a inbound port to 1433. This is required for SSIS Runtime to access the database.
     * Go to Network Security Group (Azure) and setup inbound ports with 1433
 2. Download both WWI databases to your on-premise SQL server or Azure VM you have just provisioned. [Download Link](https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0). Go to the section called, "SQL Server 2016 SP1 (or later) Any Edition aside from LocalDB; SQL Server 2016 RTM (or later) Evaluation/Developer/Enterprise Edition" and download the two bullets under this heading.

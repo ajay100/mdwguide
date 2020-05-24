@@ -13,7 +13,7 @@ be showcasing how to migrate your traditional SQL Server (SMP) to Azure Synapse 
 WWI runs their existing database platforms on-premise with SQL Server 2017.  There are two databases samples for WWI.  The first one is for their Line of Business application (OLTP) and the second
 is for their data warehouse (OLAP).  You will need to setup both environments as our starting point in the migration.  Recommended to have students start Challenge 0 with setup of SQL VM before starting any presentations. This spin-up time is approx 30 mins and this will give you sufficient time to kick-off the event while their VMs are being setup.
 
-1. If you do not have a on-premise SQL Server 2017, you can provision a Azure Virtual Machine running SQL Server 2017 using this [Step by step guidance](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sql/virtual-machines-windows-portal-sql-server-provision#1-configure-basic-settings) Recommended size is DS12
+1. If you do not have a on-premise SQL Server 2017, you can provision a Azure Virtual Machine running SQL Server 2017 using this [Step by step guidance](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sql/virtual-machines-windows-portal-sql-server-provision) Recommended size is DS12
     * Turn off IE Enhanced Security Config in [Server Manager](https://medium.com/tensult/disable-internet-explorer-enhanced-security-configuration-in-windows-server-2019-a9cf5528be65)
     * Go to Windows Firewall internal to the VM and open a inbound port to 1433. This is required for SSIS Runtime to access the database.
     * Go to Network Security Group (Azure) and setup inbound ports with 1433
@@ -50,7 +50,7 @@ There will be four different object types we'll migrate:
 
 * Database Schema
 * Database code (Store Procedure, Function, Triggers, etc)
-* SSIS code set refactor
+* SSIS code set refactor (Optional, Team has past experience and expertise let them refactor.  All otehr student share ispac package)
 * Data migration (with SSIS)
 
 Guidelines will be provided below but you will have to determine how best to migrate.  At the end of the migration compare your 
@@ -96,22 +96,22 @@ target to Azure Synapse.  There are a number of design considerations you wil ne
 ) for more detail. 
 There are three patterns you can reuse across all scripts in the same family (Dimension & Fact).  
 
-1. Rewrite Dimension T-SQL 
-    1. UPDATE Statement can not leverage joins or subqueries.  Refactor code to resolve these issues.  
-    2. Exec as and Return can be removed for this lab
-    3. Fix Common table Expression (WITH) [Reference document](https://docs.microsoft.com/en-us/sql/t-sql/queries/with-common-table-expression-transact-sql?view=sql-server-ver15#features-and-limitations-of-common-table-expressions-in--and-)
+1. Rewrite Dimension T-SQL
+    1. Advise students to refactor stored procedure called, "Integration.MigrateStagedCityData".  Go to this [file](/Host/Solutions/Challenge1/CoachesnotesforSPCity.sql) to see solution and read comments for an explanation of changes.
+    2. UPDATE Statement can not leverage joins or subqueries.  Refactor code to resolve these issues.  
+    3. Exec as and Return can be removed for this lab
+    4. Fix Common table Expression (WITH) [Reference document](https://docs.microsoft.com/en-us/sql/t-sql/queries/with-common-table-expression-transact-sql?view=sql-server-ver15#features-and-limitations-of-common-table-expressions-in--and-)
 2. Rewrite Fact T-SQL
     1. Movement T-SQL is a special fact table that leverages a MERGE Statement.  Merge is not supported today in Azure Synapse.  You will need to split it out into an Update and Insert statement.  [Merge Workaround](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-develop-ctas#replace-merge-statements)
-    2. UPDATE statement will require explicit table name and not alias
-    3. [DELETE statement will require OPTION Label](https://docs.microsoft.com/en-us/sql/t-sql/statements/delete-transact-sql?view=sql-server-ver15#n-using-a-label-and-a-query-hint-with-the-delete-statement)
-3. Rewrite Load control tables
-    1. PopulateDateDimensionForYear -- User Defined Functions are not supported in Azure Synapse
-    2. GetLastETLCutoffTime -- @@RowCount not supported
-4. Rewrite Function for Date Dimension Table
+    2. Advise students to refactor stored procedure called, "Integration.MigrateStagedMovementData".  Go to this [file](/Host/Solutions/Challenge1/CoachesnotesforSPMovement.sql) to see solution and read comments for an explanation of changes.
+    3. UPDATE statement will require explicit table name and not alias
+    4. [DELETE statement will require OPTION Label](https://docs.microsoft.com/en-us/sql/t-sql/statements/delete-transact-sql?view=sql-server-ver15#n-using-a-label-and-a-query-hint-with-the-delete-statement)
+3. Rewrite Fact T-SQL for appends only
+    1. Advise students to refactor stored procedure called, "Integration.MigrateStagedSaleData".  Go to this [file](/Host/Solutions/Challenge1/CoachesnotesforSPSale.sql) to see solution and read comments for an explanation of changes.
 
-### SSIS Job Refactor
+### SSIS Job Refactor -- Optional
 Data movement in first lab will be execution of DailyETLMDWLC.ispac job in Azure Data Factory SSIS Runtime.  This lab will reuse data pipelines to minimize migration costs.
-As data volumes increase, these jobs will need to leverage a MPP platform like Databricks, Synapse, HDInsight to transform the data at scale.  This will be done in a future lab.
+As data volumes increase, these jobs will need to leverage a MPP platform like Databricks, Synapse, HDInsight to transform the data at scale.  This will be done in a future lab.  These instructions are here to explain to you the steps performed to refactor the code set.  Only have student refactor if they have the time and expertise with SSIS.  This is not a learning objective of the Hack.
 
 1. Open SSIS package and change Source and Destination database connections. Change the login from Windows Auth to SQL Auth
 1. Update each mapping that required DDL changes.

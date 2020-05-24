@@ -14,7 +14,7 @@ There will be four different object types we'll migrate:
 
 * Database Schemas and Tables
 * Database code (Stored Procedure, Function, Triggers, etc)
-* SSIS code set refactor
+* SSIS code set refactor (Optional)
 * Data migration (with SSIS)
 
 ## Success Criteria
@@ -24,11 +24,11 @@ There will be four different object types we'll migrate:
     - Coach will provide remaining DDL scripts
 3. Refactor one Stored Procedure per design pattern.  Parathensis contains recommended objects
     - Dimension Tables (Integration.MigratedCityData)
-    - Fact Table (Appends Only; Integration.MigratedStagedOrderData)
+    - Fact Table (Appends Only; Integration.MigratedStagedSaleData)
     - Fact Table (Merge; Integration.MigratedStagedMovementData)
     - Coach will share remaining T-SQL Scripts
 4. Run SSIS jobs based on new mappings
-    - Coach will share DailyETL package
+    - Coach will share DailyETLMDWLC package
     - Run end-to-end load in Synapse
 5. Unit Test environment to validate data
     - Compare run counts against OLAP database
@@ -65,7 +65,7 @@ There will be four different object types we'll migrate:
 ### SSIS Job
 1. [Github repo](https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0) (Daily.ETL.ispac) 
 1. [Provision SSIS Runtime in Azure](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-deploy-ssis-packages-azure)
-1. [Deploy SSIS Pakcage](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
+1. [Deploy SSIS Package](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
 
 
 ### Data Migration (Optional for migration)
