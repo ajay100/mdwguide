@@ -14,24 +14,23 @@ There will be four different object types we'll migrate:
 
 * Database Schemas and Tables
 * Database code (Stored Procedure, Function, Triggers, etc)
-* Data migration
-* SSIS code set refactor
+* SSIS code set refactor (Optional)
+* Data migration (with SSIS)
 
 ## Success Criteria
-1. Migrated all schemas to Synapse
+1. Migrated all database schemas to Synapse
 2. Created one table per schema in Synapse
+    - Tables to create are; Dimension.City, Fact.Order & Integration.Order_Staging
     - Coach will provide remaining DDL scripts
-3. Refactor one Stored Procedure per design pattern
-    - Dimension Tables
-    - Fact Table (Insert Only)
-    - Fact Table (Merge)
-    - Control tables
+3. Refactor one Stored Procedure per design pattern.  Parathensis contains recommended objects
+    - Dimension Tables (Integration.MigratedCityData)
+    - Fact Table (Appends Only; Integration.MigratedStagedSaleData)
+    - Fact Table (Merge; Integration.MigratedStagedMovementData)
     - Coach will share remaining T-SQL Scripts
-4. End-to-End Data migration
-    - Run unit test script to confirm counts
-5. Run SSIS jobs based on new mappings
-    - Coach will share DailyETL package
+4. Run SSIS jobs based on new mappings
+    - Coach will share DailyETLMDWLC package
     - Run end-to-end load in Synapse
+5. Unit Test environment to validate data
     - Compare run counts against OLAP database
 
 ## Stage 1 Architecture
@@ -54,7 +53,7 @@ There will be four different object types we'll migrate:
 1. [Create Table Syntax](https://docs.microsoft.com/en-us/sql/t-sql/statements/create-table-azure-sql-data-warehouse?view%253Daps-pdw-2016-au7=&view=aps-pdw-2016-au7)
 1. [Identity Column](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-identity)
 1.  [Data Migration Utility](https://www.sqlservercentral.com/articles/azure-dwh-part-11-data-warehouse-migration-utility)
-    - Talk with coach for need of tool and trade-offs.
+    - Talk with coach for need of tool and trade-offs.  This tool is in folder \Host\Solutions\Challenge1\DataWarehouseMigrationUtility.zip Ask coach for it.
 
 ### Database code rewrite (T-SQL)
 1. [Design Considerations when refactoring your code](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-overview-develop)
@@ -63,16 +62,17 @@ There will be four different object types we'll migrate:
 1. [Check your T-SQL for incompatibilies #3](https://www.blue-granite.com/blog/5-important-steps-when-migrating-to-your-scaled-out-data-warehouse)
 1. [SQL Differences in T-SQL](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-troubleshoot#differences-from-sql-database)
 
-### Data Migration
-1. [Bulk Copy Program](https://docs.microsoft.com/en-us/sql/tools/bcp-utility?toc=/azure/synapse-analytics/sql-data-warehouse/toc.json&bc=/azure/synapse-analytics/sql-data-warehouse/breadcrumb/toc.json&view=azure-sqldw-latest) 
-1. [BCP Instructions](https://github.com/uglide/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-load-with-bcp.md)
-1. [Data migration techniques](https://github.com/uglide/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-migrate-data.md)
-1. [Data Skew due to Distribution Key](https://github.com/rgl/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-manage-distributed-data-skew.md)
-
 ### SSIS Job
 1. [Github repo](https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0) (Daily.ETL.ispac) 
 1. [Provision SSIS Runtime in Azure](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-deploy-ssis-packages-azure)
-1. [Deploy SSIS Pakcage](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
+1. [Deploy SSIS Package](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
+
+
+### Data Migration (Optional for migration)
+1. [Bulk Copy Program](https://docs.microsoft.com/en-us/sql/tools/bcp-utility?toc=/azure/synapse-analytics/sql-data-warehouse/toc.json&bc=/azure/synapse-analytics/sql-data-warehouse/breadcrumb/toc.json&view=azure-sqldw-latest)
+1. [BCP Instructions](https://github.com/uglide/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-load-with-bcp.md)
+1. [Data migration techniques](https://github.com/uglide/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-migrate-data.md)
+1. [Data Skew due to Distribution Key](https://github.com/rgl/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-manage-distributed-data-skew.md)
 
 ## Tips
 1. Determine your distribution column (HINT IDENTITY Column can not be your distribution key)
@@ -84,17 +84,17 @@ SELECT  t.[name], c.[name], c.[system_type_id], c.[user_type_id], y.[is_user_def
 	JOIN sys.columns c on t.[object_id]    = c.[object_id]
 	JOIN sys.types   y on c.[user_type_id] = y.[user_type_id]
 	WHERE y.[name] IN ('geography','geometry','hierarchyid','image','text','ntext','sql_variant','timestamp','xml')
-	AND  y.[is_user_defined] = 1;
+	OR  y.[is_user_defined] = 1;
 ```
 4. Review the SSIS jobs that are at this [Github repo](https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0) (Daily.ETL.ispac)  This job leverages
 stored procedures in the Source and Target databases extensively.  This will require a refactoring of the Stored procedures for the OLAP database when you repoint the ETL
 target to Azure Synapse.
+5. For you to see SSIS Catalog in your server after setup folllow these instructions.  Open SQL Server Management Studio. Connect to the SSISDB database. Select Options to expand the Connect to Server dialog box. In the expanded Connect to Server dialog box, select the Connection Properties tab. In the Connect to database field, select or enter SSISDB.
 
 
 ## Additional Challenges
 
 *Too comfortable?  Eager to do more?  Try these additional challenges!*
 
-1. Setup incremental loads in SSIS jobs
-2. Deploy job into ADF SSIS Runtime and Catalog
-3. [Generate new data and load into Synapase](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-generate-data?view=sql-server-ver15)
+1. Setup Virtual Machine to use Self-hosted runtime with proxy in SSIS job.  [Read instructions](https://docs.microsoft.com/en-us/azure/data-factory/self-hosted-integration-runtime-proxy-ssis)
+1. [Generate new data and load into Synapase](https://docs.microsoft.com/en-us/sql/samples/wide-world-importers-generate-data?view=sql-server-ver15)

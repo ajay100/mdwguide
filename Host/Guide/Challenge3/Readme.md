@@ -1,6 +1,6 @@
 # 	Challenge 3 -- Redesign SSIS jobs into ELT with ADF
 
-[< Previous Challenge](/Host/Challenges/Challenge2/README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](/Host/Challenges/Challenge4/README.md)
+[< Previous Challenge](/Host/Guide/Challenge2/Readme.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](/Host/Guide/Challenge4/README.md)
 
 ## Introduction
 WW Importers keep missing their SLAs in terms of the nightly loads.  The loads take six hours to complete and starts each evening at 1:00AM.  They must complete by 8:00AM but frequenly these jobs are taking longer than usual.  A few critical stakeholders are asking them to provide data more frequently on an hourly basis.  Since these business units are their key stakeholders, they have the funding to help replatform their data pipelines.  Now that the OLTP data is being extracted into the data lake, the team at WWI is ready to extend  their pipelines and load this data into their Data Warehouse for Stage 3.  As stated in the previous challenge, these data pipelines must be ELT (Extract, Load & Transform) so they can quickly write the data to the cloud and scale out the compute to transform the data.  Now that the EXTRACT phase is complete, it's time to build the Transform and Load processes.
