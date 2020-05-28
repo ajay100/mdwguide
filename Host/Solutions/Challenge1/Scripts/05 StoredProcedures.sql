@@ -967,14 +967,17 @@ BEGIN
 END;
 GO
 
-/****** Object:  StoredProcedure [Integration].[Configuration_ReseedETL]    Script Date: 4/22/2020 9:22:27 AM ******/
+/****** Object:  StoredProcedure [Integration].[Configuration_ReseedETL]    Script Date: 5/27/2020 9:12:56 PM ******/
 DROP PROCEDURE [Integration].[Configuration_ReseedETL]
 GO
-/****** Object:  StoredProcedure [Integration].[Configuration_ReseedETL]    Script Date: 4/22/2020 9:22:27 AM ******/
+
+/****** Object:  StoredProcedure [Integration].[Configuration_ReseedETL]    Script Date: 5/27/2020 9:12:56 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROC [Integration].[Configuration_ReseedETL] AS
 
 BEGIN
@@ -985,16 +988,21 @@ BEGIN
 
 	DECLARE @StartingETLCutoffTime datetime2(7) = '20121231';
 
+	DECLARE @EndingETLCutoffTime datetime2(7) = '20200101';
+
 	DECLARE @StartOfTime datetime2(7) = '20130101';
 
 	DECLARE @EndOfTime datetime2(7) =  '99991231 23:59:59.9999999';
 
 
 
+	UPDATE Integration.[Load_Control]
+
+		SET [Load_Date] = @EndingETLCutoffTime;
+
 	UPDATE Integration.[ETL Cutoff]
 
 		SET [Cutoff Time] = @StartingETLCutoffTime;
-
 
 
 	TRUNCATE TABLE Fact.Movement;
@@ -1009,7 +1017,31 @@ BEGIN
 
 	TRUNCATE TABLE Fact.[Transaction];
 
+	TRUNCATE TABLE INtegration.City_Staging;
 
+	TRUNCATE TABLE INtegration.Customer_Staging;
+
+	TRUNCATE TABLE INtegration.Employee_Staging;
+
+	TRUNCATE TABLE INtegration.Movement_Staging;
+
+	TRUNCATE TABLE INtegration.Order_Staging;
+
+	TRUNCATE TABLE INtegration.PaymentMethod_Staging;
+
+	TRUNCATE TABLE INtegration.Purchase_Staging;
+
+	TRUNCATE TABLE INtegration.Sale_Staging;
+
+	TRUNCATE TABLE INtegration.StockHolding_Staging;
+
+	TRUNCATE TABLE INtegration.StockItem_Staging;
+
+	TRUNCATE TABLE INtegration.Supplier_Staging;
+
+	TRUNCATE TABLE INtegration.Transaction_Staging;
+
+	TRUNCATE TABLE Integration.TransactionType_Staging;
 
 	DELETE Dimension.City;
 
@@ -1126,3 +1158,26 @@ BEGIN
 END;
 GO
 
+/****** Object:  StoredProcedure [Integration].[GetLastETLCutoffTime]    Script Date: 4/8/2020 7:20:40 PM ******/
+DROP PROCEDURE [Integration].[GetLoadDate]
+GO
+
+/****** Object:  StoredProcedure [Integration].[GetLastETLCutoffTime]    Script Date: 4/8/2020 7:20:40 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE [Integration].[GetLoadDate]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    SELECT [Load_Date] AS LoadDate
+    FROM Integration.[Load_Control];
+
+END;
+GO
