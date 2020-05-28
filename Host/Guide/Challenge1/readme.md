@@ -138,7 +138,18 @@ machine where the text files reside.  The user name and password will need to be
 1. Review Data Skew of Distributed Tables to see if your distribution keys are accurate [Reference document](https://github.com/rgl/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-manage-distributed-data-skew.md)
 
 
-Congratulations!!! The migration is complete.  Run your SSIS jobs to load data from OLTP to OLAP data warehouse.  You might want to create a load control table to setup incremental loads.  This will validate you've completed all steps successfully.  Compare the results of the WWI OLAP database vs. the one you've migrated into Azure Synapse Analytics.
+### Data Setup in Synapse
+Before each FULL (All Data) load, you will need to rollback your environment to the original state.  There is a stored procedure called, "Integration.Configuration_ReseedETL".  This ReseedETL Stored Procedure will need to be ran everytime you want to load the SSIS job.  
+
+For the first time setup, here are the steps that need to be performed.  This is only for the iniital setup of the database and first run of the SSIS job.  Everyrun thereafter only requires you to execute the Reseed ETL Stored Procedure.
+1. Deploy the dacpac or run all T-SQL Scripts in the Scripts folder that have a number prefix.
+1. BCP all data from the Seed_Data folder in Host Solutions folder.  These three tables will be empty after restoring dacpac; Date, Lineage and ETL Cutoff.
+1. Execute the Reseed ETL Stored Procedure to rollback environment to original state before you load the data
+
+A coach's suggestion is to have your team setup two enviroments for this challenge; Dev and Test.  This way they can hack all they want in their dev environment and not worry about impacting the work they've done to date.  After each challenge they can promote their dev code or restore the solution files into their test environment.  This way you can ensure after each challenge their environment won't regress and prevent them from going to the next challenge.
+
+## Congratulations!!! 
+The migration is complete.  Run your SSIS jobs to load data from OLTP to OLAP data warehouse.  You might want to create a load control table to setup incremental loads.  This will validate you've completed all steps successfully.  Compare the results of the WWI OLAP database vs. the one you've migrated into Azure Synapse Analytics.
 
 # SOLUTIONS
 [Go to Solution](/Host/Solutions/Challenge1)
