@@ -34,7 +34,7 @@ Create a data pipeline for the [Dimension].[City] table considering logic above.
 ## Stage 3 Architecture
 ![The Solution diagram is described in the text following this diagram.](/images/Challenge3.png)
 
-## Leanring Resources
+## Learning Resources
 1. [Load data into DW via Polybase](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/load-data-from-azure-blob-storage-using-polybase)
 1. [Incrementally load multiple tables in Azure Data Factory](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-incremental-copy-multiple-tables-portal)
 1. [Azure Data Factory Copy Activity](https://docs.microsoft.com/en-us/azure/data-factory/copy-activity-overview)
