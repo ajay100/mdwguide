@@ -12,18 +12,19 @@ Note: This challenge is intended to build upon challenge 1, and you should try t
 
 ## Success Criteria
 1. Deploy a new storage account resource.
-2. Define directory structure to support data lake use cases as follows;
-    - 2 parent directories created: 
-        - '\In' (or Staging Data) - This will the sink location used as the landing zone for staging your data.
-        - '\Out' (or processed data) - This will be the location for downstream systems to consume the data once it has been processed.
-    - Within each of these folders, you should consider creating folders for tables, systems and dates loaded into your DW.
+2. Define directory structure to support data lake use cases as follows:
+    - .\IN\WWIDW\[TABLE]\ - This will the sink location used as the landing zone for staging your data.
+    - .\RAW\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
+    - .\STAGED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ 
+    - .\CURATED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\
 3. Configure folder level security in your new data lake storage 
     - only your ETL job should be able to write to your \IN directory
     - you should be able to grant individual access to users who may want to access your \Out directory based on AAD credentials
 4. Deploy Azure Data Factory 
-5. Create a pipeline to copy data into ADLS
-    - Your pipeline should contain at least one copy activity that copies data from a source table in the WideWorldImporters OLTP database into a file in your new data lake
-        - Your data source should leverage the [Integration].[Get[[TableName]]Updates] stored procedures that already exist in the source
+5. Create a pipeline to copy data from the into ADLS.  Your pipeline will need the following components:
+    - Lookup Activity that queries the [Integration].[ETL Cutoff Table] in your Synapse DW to get the last refresh date for the City data. This result will be used as the @LastCutoff parameter in your copy activity
+    - Lookup activity that queries [Integration].[Load Control] table in your Synapse DW to get the current refresh date. This result will be used as the @NewCutoff parameter in your copy activity
+    - Copy Data activity that uses the [Integration].[GetCityUpdates] stored procedure in your WideWorldImporters OLTP database as your source, and the .\IN\WWIDW\City\ directory as the sink 
 
 ## Stage 2 Architecture
 ![The Solution diagram is described in the text following this diagram.](/images/Challenge2.png)
@@ -43,6 +44,7 @@ Note: This challenge is intended to build upon challenge 1, and you should try t
     - What types of processes will you need to be able to support?
     - How will you secure access to directories?
 2. In addition to using the azure portal directly, you can view and manage your new storage account using the [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) 
+3. Be sure to review the [Integration].[ETL Cutoff] and [Integration].[Load Control] tables in your Synapse DW prior to executing this task.  If dates are not set correctly, the source stored procedure will not return any data.
 
 ## Additional Challenges
 1. Parameterize the source and sink properties in your pipeline where possible so that you can re-use the same pipeline for all additional tables being copied
