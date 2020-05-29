@@ -3,18 +3,30 @@
 [< Previous Challenge](/Student/Challenges/Challenge2/README.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](/Student/Challenges/Challenge4/README.md)
 
 ## Introduction
-WWI importers keep missing their SLAs in terms of the nightly loads.  The loads take six hours to complete and starts each evening at 1:00AM.  They must complete by 8:00AM but frequenly these jobs are taking longer than usual.  A few critical stakeholders are asking them to provide data more frequently on an hourly basis.  Since these business units are their key stakeholders, they have the funding to help replatform their data pipelines.  WWI importers realizes they need to build a staging tier in their Data Lake and load this into their Data Warehouse for Stage 3.  These data pipelines must be ELT (Extract, Load & Transform) so they can quickly write the data to the cloud and scale out the compute to transform the data.
+WW Importers keep missing the SLAs for their nightly data load process.  The loads take six hours to complete and start each evening at 1:00AM.  They must complete by 8:00AM but frequenly these jobs are taking longer than planned.  In addition a few critical stakeholders are asking if they can provide the data even more frequently.  Since these business units are their key stakeholders, they have the funding to help replatform their data pipelines.  WW Importers realizes they need to leverage their new Data Lake to scale load this into their Data Warehouse for Stage 3.  These data pipelines must be ELT (Extract, Load & Transform) so they can quickly write the data to the cloud and scale out the compute to transform the data.
 
 ## Description
-The objetive of this lab is to modernize the ETL pipeline that was originally built in SSIS.  We need to rebuild this pipeline in Azure leveraging scale-out architecture to transform this data.  The data flow will be to extract the data from the OLTP platform, store it in the Azure Data Lake and bulk ingest it into Azure Synapase Analytics.  This will be run on a nightly basis so leverage Azure Data Factory as a job orchestration and scheduling tool.
+The objective of this lab is to modernize the ETL pipeline that was originally built in SSIS.  A detailed diagram of the current workflow is included below.  We need to rebuild this pipeline in Azure leveraging scale-out architecture to transform this data.  The data flow will include steps to extract the data from the OLTP platform, store it in the Azure Data Lake and bulk ingest it into Azure Synapase Analytics.  This will be run on a nightly basis, and will need to leverage Azure Data Factory as a job orchestration and scheduling tool.
+
+![Current SSIS Workflow](/images/SSISFlow.png)
+
+1. The first step of the pipeline is to retrieve the “ETL Cutoff Date”. This date can be found in the [Integration].[Load_Control] in Azure Synapse DW and should have been created as part of challenge 1.
+1. The next step ensures that the [Dimension].[Date] table is current by executing the [Integration].[PopulateDateDimensionForYear] in Azure Synapse DW
+1. Next the [Integration].[GetLineageKey] procedure is executed to create a record for each activity in the [Integration].[Lineage Key] table
+1. This step Truncates the [Integration].[[Table]_Staging] tables to prep them for new data
+1. This step retrieves the cutoff date for the last successful load of each table from the [Integration].[ETL Cutoffs] Table
+1. New data is now read from the OLTP source (using [Integration].[Get[Table]Updates] procedures) and copied into the [Integration].[[Table]_Staging] tables in the target DW
+1. Finally the staged data is merged into the [Dimension] and [Fact] tables in the target DW
+    - <b>NOTE: As part of this step, surrogate keys are generated for new attributes in Dimension tables (tables in the [Dimension] schema), so Dimenion tables must be loaded before FACT tables to maintain data integrity
 
 Note: This challenge is intended to build upon the previous 2 challenges, and you should try to reuse content wherever possible
 
 ## Success Criteria
-Create one data pipeline for one target Fact or Dimension table of your choice.  Follow these steps for this pipeline.
-1. Add a new activity to your Azure Data Factory to load data from the new Azure Data Lake into the _Staging tables in the Data Warehouse in Azure Synapse via Polybase
-1. Add another new activity to move the files to the \Out directory in your data lake once they have been loaded into your DW table
-1. Create another activity to merge the new data into the target Fact and Dimension tables in your DW from your _Staging tables
+Create a data pipeline for the [Dimension].[City] table considering logic above.  Follow these steps for this pipeline.
+1. Add a new activity to your Azure Data Factory to load data from the new Azure Data Lake into the [Integration].[City_Staging] in the Data Warehouse in Azure Synapse via Polybase
+1. Add an activity to execute the Get Lineage Key stored procedure so that the process can be logged
+1. Add another new activity to move the files to the .\STAGED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ directory in your data lake once they have been loaded into your DW table
+1. Create another activity to merge the new data into the target table ([Dimension].[City]) from your staging table [Integration].[City_Staging] 
 1. Test your new Azure Data Factory Pipeline by validating that data added to the source system will flow through to final target tables
 
 ## Stage 3 Architecture
@@ -34,8 +46,9 @@ Create one data pipeline for one target Fact or Dimension table of your choice. 
 1. Optimize where possible by using dynamic code, and executing tasks in parallel.
 
 ## Additionally Challenges
-1. Parameterize the data pipeline to use one pipeline for all tables
-1. Build out job to incorporate incremental loads
+1. Enhance the pipeline so that it can be used to load all tables.  Steps required for this would include:
+    - Update Azure Data Factory to use expressions and parameters wherever possible
+    - Add a ForEach Loop to iterate through all tables and execute your pipeline for each one (note: Dimensions need to be loaded prior to Facts)
 1. Leverage [partition switching](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-partition?toc=/azure/synapse-analytics/toc.json&bc=/azure/synapse-analytics/breadcrumb/toc.json#partition-switching) for tables with large-scale modifications (UPDATES)
 1. Refactor the T-SQL code in Polybase to leverage Python or Scala
 1. Build out these data pipelines using Azure Mapping Data Flows
