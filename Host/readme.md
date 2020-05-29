@@ -11,9 +11,9 @@ The following is expected timing for a standard delivery.
 |                                            |                                                                                                                                                       |
 | ------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------: |
 | **Topic** |  **Duration**  |
-| Presentation 0:  Welcome and Introduction  | 15 mins |
+| Presentation 0:  [Welcome and Introduction](/Host/Guide/MDWWTHIntro.pptx)  | 5 mins |
 | Challenge 0: Environment Setup | 30 mins|
-| Presentation 1: Intro to Modern Data Warehouse | 15 mins|
+| Presentation 1: [Intro to Modern Data Warehouse](/Host/Guide/MDWWTHIntro.pptx) | 30 mins|
 | Challenge 1: Data Warehouse Migration | 240 mins |
 | Challenge 2: Data Lake Integration | 120 mins |
 | Challenge 3: Data pipeline Migration | 240 mins |
