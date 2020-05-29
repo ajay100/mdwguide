@@ -45,6 +45,7 @@ Note: This challenge is intended to build upon challenge 1, and you should try t
     - How will you secure access to directories?
 2. In addition to using the azure portal directly, you can view and manage your new storage account using the [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) 
 3. Be sure to review the [Integration].[ETL Cutoff] and [Integration].[Load Control] tables in your Synapse DW prior to executing this task.  If dates are not set correctly, the source stored procedure will not return any data.
+4. Additional information on using Lookup Tasks and expressions in Azure Data Factory can be found [here](https://www.cathrinewilhelmsen.net/2019/12/23/lookups-azure-data-factory/)
 
 ## Additional Challenges
 1. Parameterize the source and sink properties in your pipeline where possible so that you can re-use the same pipeline for all additional tables being copied

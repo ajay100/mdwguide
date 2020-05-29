@@ -46,6 +46,7 @@ Create a data pipeline for the [Dimension].[City] table considering logic above.
     - [Copy Data task in Azure Data Factory](https://docs.microsoft.com/en-us/azure/data-factory/connector-azure-sql-data-warehouse)
 1. For MERGE process, you should reuse or replicate logic found in the Integration.MigratedStaged____Data stored procedures
 1. Optimize where possible by using dynamic code, and executing tasks in parallel.
+1. 4. Additional information on using Lookup Tasks and expressions in Azure Data Factory can be found [here](https://www.cathrinewilhelmsen.net/2019/12/23/lookups-azure-data-factory/)
 
 ## Additional Challenges
 1. Enhance the pipeline so that it can be used to load all tables.  Steps required for this would include:
