@@ -10,6 +10,8 @@ The objective of this lab is to modernize the ETL pipeline that was originally b
 
 ![Current SSIS Workflow](/images/SSISFlow.png)
 
+<b>Below is a summary of each of the tasks in the existing SSIS package.  Note that we will be able to re-use the existing scripts for all of these tasks except for step 6.</b>
+
 1. The first step of the pipeline is to retrieve the “ETL Cutoff Date”. This date can be found in the [Integration].[Load_Control] in Azure Synapse DW and should have been created as part of challenge 1.
 1. The next step ensures that the [Dimension].[Date] table is current by executing the [Integration].[PopulateDateDimensionForYear] in Azure Synapse DW
 1. Next the [Integration].[GetLineageKey] procedure is executed to create a record for each activity in the [Integration].[Lineage Key] table
@@ -17,7 +19,7 @@ The objective of this lab is to modernize the ETL pipeline that was originally b
 1. This step retrieves the cutoff date for the last successful load of each table from the [Integration].[ETL Cutoffs] Table
 1. New data is now read from the OLTP source (using [Integration].[Get[Table]Updates] procedures) and copied into the [Integration].[[Table]_Staging] tables in the target DW
 1. Finally the staged data is merged into the [Dimension] and [Fact] tables in the target DW
-    - <b>NOTE: As part of this step, surrogate keys are generated for new attributes in Dimension tables (tables in the [Dimension] schema), so Dimenion tables must be loaded before FACT tables to maintain data integrity
+    - <b>NOTE: As part of this step, surrogate keys are generated for new attributes in Dimension tables (tables in the [Dimension] schema), so Dimenion tables must be loaded before FACT tables to maintain data integrity</b>
 
 Note: This challenge is intended to build upon the previous 2 challenges, and you should try to reuse content wherever possible
 
