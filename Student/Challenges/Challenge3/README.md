@@ -25,8 +25,8 @@ Note: This challenge is intended to build upon the previous 2 challenges, and yo
 Create a data pipeline for the [Dimension].[City] table considering logic above.  Follow these steps for this pipeline.
 1. Add a new activity to your Azure Data Factory to load data from the new Azure Data Lake into the [Integration].[City_Staging] in the Data Warehouse in Azure Synapse via Polybase
 1. Add an activity to execute the Get Lineage Key stored procedure so that the process can be logged
-1. Add another new activity to move the files to the .\STAGED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ directory in your data lake once they have been loaded into your DW table
 1. Create another activity to merge the new data into the target table ([Dimension].[City]) from your staging table [Integration].[City_Staging] 
+1. Add another new activity to move the files to the .\STAGED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ directory in your data lake once they have been loaded into your DW table
 1. Test your new Azure Data Factory Pipeline by validating that data added to the source system will flow through to final target tables
 
 ## Stage 3 Architecture
@@ -45,7 +45,7 @@ Create a data pipeline for the [Dimension].[City] table considering logic above.
 1. For MERGE process, you should reuse or replicate logic found in the Integration.MigratedStaged____Data stored procedures
 1. Optimize where possible by using dynamic code, and executing tasks in parallel.
 
-## Additionally Challenges
+## Additional Challenges
 1. Enhance the pipeline so that it can be used to load all tables.  Steps required for this would include:
     - Update Azure Data Factory to use expressions and parameters wherever possible
     - Add a ForEach Loop to iterate through all tables and execute your pipeline for each one (note: Dimensions need to be loaded prior to Facts)
