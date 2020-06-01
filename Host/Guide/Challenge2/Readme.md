@@ -16,27 +16,22 @@ The objective of this challenge is to build a Data Lake with Azure Data Lake Sto
 
 2. Define directory structure to support data lake use cases.  [This document](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-best-practices#batch-jobs-structure) describes this concept in more detail.
 
-    - Create a new Storage Container and structure folders as outlined below:
-
-        - WWIDW
-            - \In
-                - \City
-                - \Sale
-                - \etc...
-            - \Out
-                - \City
-                - \Sale
-                - \etc...
+    - .\IN\WWIDW\[TABLE]\ - This will the sink location used as the landing zone for staging your data.
+    - .\RAW\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
+    - .\STAGED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ 
+    - .\CURATED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\
 
 3. Configure folder level security in your new data lake storage.  Supporting documentation for securing ADLS Gen 2 can be found [here](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control). 
 
-4. Deploy a new Azure Data Factory resource in your subscription.  You can find a similar sample explained [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-hybrid-copy-data-tool).  Note: steps below explain how to create applicable pipelines and activities in more detail.
+4. Deploy a new Azure Data Factory resource in your subscription.  You can find a similar sample explained [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-hybrid-copy-data-tool).  
+<br><b>Note: steps below explain how to create applicable pipelines and activities in more detail.</b>
 
 5. Create a pipeline to copy data into ADLS. Keep in mind that this pipeline will serve as the <b>EXTRACT</b> portion of WWI's new ELT process.  There are stored procedures already present in the OLTP database that can be used to query the source data, but they will require start and end date parameters in order to be executed.
 
     - Using instructions found in [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-incremental-copy-multiple-tables-portal#create-a-data-factory), access the Azure Data Factory UI and create necessary linked services, datasets, pipelines, and activities (Note: JSON for each of the objects below can be found in the resources folder).  
         - Linked Services:
-            - SQL Server connection for WideWorldImporters database  <b>NOTE: you will need to create a new Self Hosted Integration Runtime is your source SQL server is not open to the public</b>
+            - SQL Server connection for WideWorldImporters database  
+            <br><b>NOTE: you will need to create a new Self Hosted Integration Runtime IF your source SQL server is not open to the public</b>
             - Azure Data Lake Gen 2
         - Datasets:
             - WideWorldImporters 
@@ -46,13 +41,14 @@ The objective of this challenge is to build a Data Lake with Azure Data Lake Sto
                     - create Lookup activities to query the DW and assign values for the last refresh time of the [City] table. Instructions can be found [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-incremental-copy-portal)<br>
                     - create a Copy acitvity with properties below. Guide can be found [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-hybrid-copy-portal)<br>
                         - > Source Dataset: WideWorldImporters - Stored Procedure [Integration].[GetCityUpdates] <br>
-                        - > Sink Dataset: ADLS Gen2 - WWIDW\In\City\<br>
+                        <br><b>Note: You will need to modify this stored procedure to ensure that the [Location] field is excluded from the results.  Otherwise this data will cause errors due to incompatibility with Azure Data Factory.  You can find the updated procedure in the Scripts folder in the attached Solution Guide.</b>
+                        - > Sink Dataset: ADLS Gen2 - IN\WWIDW\CITY\<br>
                 NOTE: by using expressions and parameters in Linked Services, Datasets, and source query, you can make this pipeline dynamic and reuse for all tables.  See example of this pattern [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-incremental-copy-portal)
                 
     - Create a 2nd pipeline with a ForEach Loop activity to iterate through the list of tables and execute Pipeline created above for each table.  A Guide describing how to implement this pattern can be found [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-bulk-copy-portal).<br>
         - Activities:<br>
             - Lookup Activity
-                - query config table in DW to return list of tables<br>
+                - query [Integration].[ETL Cutoff] table in Azure Synapse DW to return list of tables<br>
             - ForEach Activity
                 - iterate over list of tables
                 - Execute Pipeline task to execute pipeline create above (Note: you will need to pass in table name as parameter)
