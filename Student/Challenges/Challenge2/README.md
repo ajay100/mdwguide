@@ -13,10 +13,10 @@ Note: This challenge is intended to build upon challenge 1, and you should try t
 ## Success Criteria
 1. Deploy a new storage account resource.
 2. Define directory structure to support data lake use cases as follows:
-    - .\IN\WWIDW\[TABLE]\ - This will the sink location used as the landing zone for staging your data.
-    - .\RAW\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
-    - .\STAGED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ 
-    - .\CURATED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\
+    - .\IN\WWIDW\ [TABLE]\ - This will the sink location used as the landing zone for staging your data.
+    - .\RAW\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
+    - .\STAGED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ 
+    - .\CURATED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\
 3. Configure folder level security in your new data lake storage 
     - only your ETL job should be able to write to your \IN directory
     - you should be able to grant individual access to users who may want to access your \Out directory based on AAD credentials
