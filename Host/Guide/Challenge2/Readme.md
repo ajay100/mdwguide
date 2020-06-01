@@ -16,10 +16,10 @@ The objective of this challenge is to build a Data Lake with Azure Data Lake Sto
 
 2. Define directory structure to support data lake use cases.  [This document](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-best-practices#batch-jobs-structure) describes this concept in more detail.
 
-    - .\IN\WWIDW\[TABLE]\ - This will the sink location used as the landing zone for staging your data.
-    - .\RAW\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
-    - .\STAGED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\ 
-    - .\CURATED\WWIDW\[TABLE]\{YY}\{MM}\{DD}\
+    - .\IN\WWIDW\ [TABLE]\ - This will the sink location used as the landing zone for staging your data.
+    - .\RAW\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
+    - .\STAGED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ 
+    - .\CURATED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\
 
 3. Configure folder level security in your new data lake storage.  Supporting documentation for securing ADLS Gen 2 can be found [here](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control). 
 

@@ -8,7 +8,7 @@ CREATE MASTER KEY;
 -- B (for Gen2 storage key authentication): Create a database scoped credential
 -- IDENTITY: Provide any string, it is not used for authentication to Azure storage.
 -- SECRET: Provide your Azure storage account key.
-
+--drop database scoped credential ADLSCredential
 CREATE DATABASE SCOPED CREDENTIAL ADLSCredential
 WITH
     IDENTITY = 'user',
@@ -23,7 +23,7 @@ WITH
 CREATE EXTERNAL DATA SOURCE AzureDataLakeStorage
 WITH (
     TYPE = HADOOP,
-    LOCATION='abfss://[container]@[storageaccount].dfs.core.windows.net/WWIDW', -- Please note the abfss endpoint for when your account has secure transfer enabled
+    LOCATION='abfss://[container]@[storage account].dfs.core.windows.net/IN/WWIDW', -- Please note the abfss endpoint for when your account has secure transfer enabled
     CREDENTIAL = ADLSCredential
 );
 
