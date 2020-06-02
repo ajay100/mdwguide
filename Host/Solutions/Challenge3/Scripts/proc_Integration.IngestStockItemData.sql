@@ -1,4 +1,4 @@
-ALTER Procedure Integration.[IngestStockItemData]
+CREATE Procedure Integration.[IngestStockItemData]
 AS
 BEGIN
 
@@ -33,7 +33,7 @@ CREATE EXTERNAL TABLE [Integration].[DimStockItem_external] (
 )
 WITH
 (
-    LOCATION=''/In/Stock Item''
+    LOCATION=''/Stock Item''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

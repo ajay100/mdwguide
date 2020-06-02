@@ -1,4 +1,4 @@
-ALTER Procedure Integration.[IngestTransactionTypeData]
+CREATE Procedure Integration.[IngestTransactionTypeData]
 AS
 BEGIN
 
@@ -22,7 +22,7 @@ CREATE EXTERNAL TABLE [Integration].[DimTransactionType_external] (
 )
 WITH
 (
-    LOCATION=''/In/Transaction Type''
+    LOCATION=''/Transaction Type''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

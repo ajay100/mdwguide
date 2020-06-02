@@ -1,4 +1,4 @@
-ALTER  Procedure Integration.IngestOrderData 
+CREATE  Procedure Integration.IngestOrderData 
 AS
 BEGIN
 
@@ -37,7 +37,7 @@ CREATE EXTERNAL TABLE [Integration].[FactOrder_external] (
 )
 WITH
 (
-    LOCATION=''/In/Order''
+    LOCATION=''/Order''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

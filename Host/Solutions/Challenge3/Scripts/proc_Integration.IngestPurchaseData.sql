@@ -1,4 +1,4 @@
-ALTER  Procedure Integration.IngestPurchaseData 
+CREATE  Procedure Integration.IngestPurchaseData 
 AS
 BEGIN
 
@@ -29,7 +29,7 @@ CREATE EXTERNAL TABLE [Integration].[FactPurchase] (
 )
 WITH
 (
-    LOCATION=''/In/Purchase''
+    LOCATION=''/Purchase''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

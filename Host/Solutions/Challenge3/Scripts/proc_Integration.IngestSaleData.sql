@@ -1,4 +1,4 @@
-ALTER  Procedure Integration.IngestSaleData 
+CREATE  Procedure Integration.IngestSaleData 
 AS
 BEGIN
 
@@ -39,7 +39,7 @@ CREATE EXTERNAL TABLE [Integration].[FactSale_external] (
 )
 WITH
 (
-    LOCATION=''/In/Sale''
+    LOCATION=''/Sale''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

@@ -1,4 +1,4 @@
-ALTER Procedure Integration.IngestEmployeeData 
+CREATE Procedure Integration.IngestEmployeeData 
 AS
 BEGIN
 
@@ -22,7 +22,7 @@ CREATE EXTERNAL TABLE [Integration].[DimEmployee_external] (
 )
 WITH
 (
-    LOCATION=''/In/Employee''
+    LOCATION=''/Employee''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

@@ -1,4 +1,4 @@
-ALTER  Procedure Integration.IngestMovementData 
+CREATE  Procedure Integration.IngestMovementData 
 AS
 BEGIN
 
@@ -28,7 +28,7 @@ CREATE EXTERNAL TABLE [Integration].[FactMovement_external] (
 )
 WITH
 (
-    LOCATION=''/In/Movement''
+    LOCATION=''/Movement''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

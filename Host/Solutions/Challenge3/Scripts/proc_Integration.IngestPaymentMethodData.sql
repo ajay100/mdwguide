@@ -1,4 +1,4 @@
-ALTER Procedure Integration.[IngestPaymentMethodData]
+CREATE Procedure Integration.[IngestPaymentMethodData]
 AS
 BEGIN
 
@@ -19,7 +19,7 @@ CREATE EXTERNAL TABLE [Integration].[DimPaymentMethod] (
 )
 WITH
 (
-    LOCATION=''/In/Payment Method''
+    LOCATION=''/Payment Method''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

@@ -1,4 +1,4 @@
-ALTER  Procedure Integration.IngestStockHoldingData 
+CREATE  Procedure Integration.IngestStockHoldingData 
 AS
 BEGIN
 
@@ -26,7 +26,7 @@ CREATE EXTERNAL TABLE [Integration].[FactStockHolding] (
 )
 WITH
 (
-    LOCATION=''/In/Stock Holding''
+    LOCATION=''/Stock Holding''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

@@ -1,5 +1,5 @@
 
-ALTER PROC [Integration].[IngestCustomerData] AS
+CREATE PROC [Integration].[IngestCustomerData] AS
 BEGIN
 
 DECLARE @SQL nvarchar(max) = N''
@@ -25,7 +25,7 @@ CREATE EXTERNAL TABLE [Integration].[DimCustomer_external] (
 )
 WITH
 (
-    LOCATION=''/In/Customer''
+    LOCATION=''/Customer''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE
