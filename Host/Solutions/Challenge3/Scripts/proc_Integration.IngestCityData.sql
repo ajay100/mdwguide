@@ -1,4 +1,4 @@
-ALTER Procedure Integration.IngestCityData 
+CREATE Procedure Integration.IngestCityData 
 AS
 BEGIN
 
@@ -27,7 +27,7 @@ CREATE EXTERNAL TABLE [Integration].[DimCity_external] (
 )
 WITH
 (
-    LOCATION=''/In/City''
+    LOCATION=''/City''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE

@@ -1,4 +1,4 @@
-ALTER  Procedure Integration.IngestSupplierData 
+CREATE  Procedure Integration.IngestSupplierData 
 AS
 BEGIN
 
@@ -27,7 +27,7 @@ CREATE EXTERNAL TABLE [Integration].[DimSupplier_external] (
 )
 WITH
 (
-    LOCATION=''/In/Supplier''
+    LOCATION=''/Supplier''
 ,   DATA_SOURCE = AzureDataLakeStorage
 ,   FILE_FORMAT = TextFileFormat
 ,   REJECT_TYPE = VALUE
