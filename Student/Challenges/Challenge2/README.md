@@ -6,14 +6,14 @@
 WWI importers realize they need to further modernize their data warehouse and wants to proceed to the second stage.  They are starting to reach capacity constraints on their data warehouse and need to offload data files from the relational database.  Likewise, they are receiving more data in json and csv file formats.  They've been discussing re-engineering their data warehouse to accomodate larger data sets, semi-structured data and real-time ingestion of data.  They like to conduct a POC on the Data Lake and see how to best to design it for integration into the Data Warehouse.  For this challenge, WWI wants us to build out the data lake and show how to load data into the lake from an on-premise data source. 
 
 ## Description
-The objective of this challenge is to build a Data Lake with Azure Data Lake Store (ADLS) Gen 2.  The Data Lake will be a staging area where all our source system data files reside. We need to ensure this Data Lake is well organized and doesn't turn into a swamp. This challenge will help us organize the folder sturcture and setup security to prevent unauthorized access.  Lastly, we will extract data from the WWI OLTP platform and store it in the Data Lake.  The OLTP platform is on-premise so you will need to build a hybrid archtiecture to integrate it into Azure.
+The objective of this challenge is to build a Data Lake with Azure Data Lake Store (ADLS) Gen 2.  The Data Lake will be a staging area where all our source system data files reside. We need to ensure this Data Lake is well organized and doesn't turn into a swamp. This challenge will help us organize the folder sturcture and setup security to prevent unauthorized access.  Lastly, we will extract data from the WWI OLTP platform and store it in the Data Lake.  The OLTP platform is on-premise so you will need to build a hybrid archtiecture to integrate it into Azure.  Keep in mind that the pipeline that you build will become the EXTRACT portion of the new E-L-T process. The first requirement is to build a functional POC that is able to move a single dataset to the new ADLS Gen 2 data lake. Ideally, it would be nice to make the process table driven so that new pipelines do not need to be created for each additional table that needs to be copied. (Optional, sharing to give insights on end-state.)
 
 Note: This challenge is intended to build upon challenge 1, and you should try to reuse content wherever possible.
 
 ## Success Criteria
 1. Deploy a new storage account resource.
 2. Define directory structure to support data lake use cases as follows:
-    - .\IN\WWIDW\ [TABLE]\ - This will the sink location used as the landing zone for staging your data.
+    - .\IN\WWIDW\ [TABLE]\ - This will be the sink location used as the landing zone for staging your data.
     - .\RAW\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
     - .\STAGED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ 
     - .\CURATED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\
@@ -21,9 +21,9 @@ Note: This challenge is intended to build upon challenge 1, and you should try t
     - only your ETL job should be able to write to your \IN directory
     - you should be able to grant individual access to users who may want to access your \Out directory based on AAD credentials
 4. Deploy Azure Data Factory 
-5. Create a pipeline to copy data from the into ADLS.  Your pipeline will need the following components:
-    - Lookup Activity that queries the [Integration].[ETL Cutoff Table] in your Synapse DW to get the last refresh date for the City data. This result will be used as the @LastCutoff parameter in your copy activity
-    - Lookup activity that queries [Integration].[Load Control] table in your Synapse DW to get the current refresh date. This result will be used as the @NewCutoff parameter in your copy activity
+5. Create a pipeline to copy data into ADLS.  Your pipeline will need the following components:
+    - Lookup Activity that queries the [Integration].[ETL Cutoff Table] in your Synapse DW to get the last refresh date for the City data. This result will be used as the @LastCutoff parameter in your copy activity.  The LastCutoff is similar to your Start Date in a range query.
+    - Lookup activity that queries [Integration].[Load Control] table in your Synapse DW to get the current refresh date. This result will be used as the @NewCutoff parameter in your copy activity. The NewCutoff is similar to your End Date in a range query.
     - Copy Data activity that uses the [Integration].[GetCityUpdates] stored procedure in your WideWorldImporters OLTP database as your source, and the .\IN\WWIDW\City\ directory as the sink 
     <br><b>Note: You will need to modify this stored procedure to ensure that the [Location] field is excluded from the results.  Otherwise this data will cause errors due to incompatibility with Azure Data Factory</b>
 
@@ -40,13 +40,17 @@ Note: This challenge is intended to build upon challenge 1, and you should try t
 1. [Azure Data Factory Incremental Load Pattern](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-incremental-copy-overview)
 
 ## Tips
+1. Things to consider when creating new data lake storage account:
+    - What type of storage account should you leverage? (Gen 1 or Gen2)
+    - How can you setup a hierarchical folder structure? Why?
+    - What are your SLAs for data retrievals?  (Access Tier)
 1. Things to consider when creating new data lake folder structure:
     - What types of data will you need to be able to support?
     - What types of processes will you need to be able to support?
     - How will you secure access to directories?
-2. In addition to using the azure portal directly, you can view and manage your new storage account using the [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) 
-3. Be sure to review the [Integration].[ETL Cutoff] and [Integration].[Load Control] tables in your Synapse DW prior to executing this task.  If dates are not set correctly, the source stored procedure will not return any data.
-4. Additional information on using Lookup Tasks and expressions in Azure Data Factory can be found [here](https://www.cathrinewilhelmsen.net/2019/12/23/lookups-azure-data-factory/)
+1. In addition to using the azure portal directly, you can view and manage your new storage account using the [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/) 
+1. Be sure to review the [Integration].[ETL Cutoff] and [Integration].[Load Control] tables in your Synapse DW prior to executing this task.  If dates are not set correctly, the source stored procedure will not return any data.
+1. Additional information on using Lookup Tasks and expressions in Azure Data Factory can be found [here](https://www.cathrinewilhelmsen.net/2019/12/23/lookups-azure-data-factory/)
 
 ## Additional Challenges
 1. Parameterize the source and sink properties in your pipeline where possible so that you can re-use the same pipeline for all additional tables being copied
