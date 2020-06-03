@@ -29,6 +29,7 @@ There will be four different object types we'll migrate:
     - Coach will share remaining T-SQL Scripts
 4. Run SSIS jobs based on new mappings
     - Coach will share DailyETLMDWLC package
+    - Review data setup instructions before you execute the SSIS jobs
     - Run end-to-end load in Synapse
 5. Unit Test environment to validate data
     - Compare run counts against OLAP database
@@ -67,6 +68,13 @@ There will be four different object types we'll migrate:
 1. [Provision SSIS Runtime in Azure](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-deploy-ssis-packages-azure)
 1. [Deploy SSIS Package](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
 
+### Data Setup in Synapse
+Before each FULL (All Data) load, you will need to rollback your environment to the original state.  There is a stored procedure called, "Integration.Configuration_ReseedETL".  This ReseedETL Stored Procedure will need to be ran everytime you want to load data with the SSIS job.  
+
+For the first time setup, here are the steps that need to be performed.  This is only for the iniital setup of the database and first run of the SSIS job.  Everyrun thereafter only requires you to execute the Reseed ETL Stored Procedure.
+1. Deploy the dacpac or run all T-SQL Scripts in the Scripts folder that have a number prefix.  Coach will share these files once you complete success criteria.
+1. BCP all data from the Seed_Data folder provided by the coach.  
+1. Execute the Reseed ETL Stored Procedure to rollback environment to original state before you load the data
 
 ### Data Migration (Optional for migration)
 1. [Bulk Copy Program](https://docs.microsoft.com/en-us/sql/tools/bcp-utility?toc=/azure/synapse-analytics/sql-data-warehouse/toc.json&bc=/azure/synapse-analytics/sql-data-warehouse/breadcrumb/toc.json&view=azure-sqldw-latest)

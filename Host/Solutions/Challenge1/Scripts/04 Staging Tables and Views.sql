@@ -516,5 +516,26 @@ AS SELECT pm.[WWI Transaction Type ID], MIN(pm.[Valid From]) AS [Valid From]
         GROUP BY pm.[WWI Transaction Type ID];
 GO
 
+/****** Object:  Table [Integration].[Load_Control]    Script Date: 4/8/2020 7:12:55 PM ******/
+DROP TABLE [Integration].[Load_Control]
+GO
+
+/****** Object:  Table [Integration].[Load_Control]    Script Date: 4/8/2020 7:12:55 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [Integration].[Load_Control](
+	[Load_Date] [datetime2](7) NOT NULL
+)
+GO
+
+INSERT INTO [Integration].[Load_Control]
+           ([Load_Date])
+     VALUES
+           ('2020-01-01 01:00:00.0000000')
+GO
 
 
