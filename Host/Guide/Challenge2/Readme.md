@@ -10,23 +10,64 @@ The objective of this challenge is to build a Data Lake with Azure Data Lake Sto
 
 
 ## Environment Setup
+1. Execute queries below in the Wide World Importers Database to update 10 existing records and insert 1 new record. 
+~~~~
+UPDATE T
+SET [LatestRecordedPopulation] = LatestRecordedPopulation + 1000
+FROM (SELECT TOP 10 * from [Application].[Cities]) T
 
-1. Deploy a new storage account resource.
+INSERT INTO [Application].[Cities]
+	(
+        [CityName]
+        ,[StateProvinceID]
+        ,[Location]
+        ,[LatestRecordedPopulation]
+        ,[LastEditedBy]
+	)
+    VALUES
+    (
+		'NewCity' + CONVERT(char(19), getdate(), 121)
+        ,1
+        ,NULL
+        , 1000
+        ,1
+	)
+;
+
+Modify the [Integration].[GetCityUpdates] stored procedure in the same OLTP database to remove the Location field from the result set returned.  
+
+SELECT [WWI City ID], City, [State Province], Country, Continent, [Sales Territory],
+           Region, Subregion,
+
+		   -- [Location] geography,                       -->Remove due to data type compatibility issues
+
+		   [Latest Recorded Population], [Valid From],
+           [Valid To]
+    FROM #CityChanges
+    ORDER BY [Valid From];
+~~~~
+2. Execute the query below in the Azure Synapse DW database to update the parameter used as the upper bound for the ELT process:
+~~~~
+UPDATE INTEGRATION.LOAD_CONTROL
+SET LOAD_DATE = getdate()
+~~~~
+
+3. Deploy a new storage account resource.
     - Create a new Azure Storage Account and enable Data Lake Storage Gen 2 (Note: set Hierarchical namespace property to Enabled).  Step by step directions can be found [here](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&tabs=azure-portal)
 
-2. Define directory structure to support data lake use cases.  [This document](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-best-practices#batch-jobs-structure) describes this concept in more detail.
+4. Define directory structure to support data lake use cases.  [This document](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-best-practices#batch-jobs-structure) describes this concept in more detail.
 
     - .\IN\WWIDW\ [TABLE]\ - This will the sink location used as the landing zone for staging your data.
     - .\RAW\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ - This will be the location for downstream systems to consume the data once it has been processed.
     - .\STAGED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\ 
     - .\CURATED\WWIDW\ [TABLE]\{YY}\{MM}\{DD}\
 
-3. Configure folder level security in your new data lake storage.  Supporting documentation for securing ADLS Gen 2 can be found [here](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control). 
+5. Configure folder level security in your new data lake storage.  Supporting documentation for securing ADLS Gen 2 can be found [here](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control). 
 
-4. Deploy a new Azure Data Factory resource in your subscription.  You can find a similar sample explained [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-hybrid-copy-data-tool).  
+6. Deploy a new Azure Data Factory resource in your subscription.  You can find a similar sample explained [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-hybrid-copy-data-tool).  
 <br><b>Note: steps below explain how to create applicable pipelines and activities in more detail.</b>
 
-5. Create a pipeline to copy data into ADLS. Keep in mind that this pipeline will serve as the <b>EXTRACT</b> portion of WWI's new ELT process.  There are stored procedures already present in the OLTP database that can be used to query the source data, but they will require start and end date parameters in order to be executed.
+7. Create a pipeline to copy data into ADLS. Keep in mind that this pipeline will serve as the <b>EXTRACT</b> portion of WWI's new ELT process.  There are stored procedures already present in the OLTP database that can be used to query the source data, but they will require start and end date parameters in order to be executed.
 
     - Using instructions found in [here](https://docs.microsoft.com/en-us/azure/data-factory/tutorial-incremental-copy-multiple-tables-portal#create-a-data-factory), access the Azure Data Factory UI and create necessary linked services, datasets, pipelines, and activities (Note: JSON for each of the objects below can be found in the resources folder).  
         - Linked Services:

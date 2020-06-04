@@ -1,1 +1,0 @@
-This folder contains source code for solution built to extract records from a single table in the source OLTP database and land it in ADLS Gen2 storage.

@@ -1,1 +1,0 @@
-This folder contains source code for solution built to iterate over list of tables found in source OLTP system, and load each to ADLS Gen2 storage.

@@ -11,13 +11,13 @@
             "type": "secureString",
             "metadata": "Secure string for 'connectionString' of 'WideWorldImporters'"
         },
-        "ADLS_accountKey": {
-            "type": "secureString",
-            "metadata": "Secure string for 'accountKey' of 'ADLS'"
-        },
         "AzureSynapseAnalytics_connectionString": {
             "type": "secureString",
             "metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics'"
+        },
+        "ADLS_accountKey": {
+            "type": "secureString",
+            "metadata": "Secure string for 'accountKey' of 'ADLS'"
         },
         "ADLS_properties_typeProperties_url": {
             "type": "string",
@@ -53,11 +53,11 @@
                     "WideWorldImporters_connectionString": {
                         "value": "[parameters('WideWorldImporters_connectionString')]"
                     },
-                    "ADLS_accountKey": {
-                        "value": "[parameters('ADLS_accountKey')]"
-                    },
                     "AzureSynapseAnalytics_connectionString": {
                         "value": "[parameters('AzureSynapseAnalytics_connectionString')]"
+                    },
+                    "ADLS_accountKey": {
+                        "value": "[parameters('ADLS_accountKey')]"
                     },
                     "ADLS_properties_typeProperties_url": {
                         "value": "[parameters('ADLS_properties_typeProperties_url')]"

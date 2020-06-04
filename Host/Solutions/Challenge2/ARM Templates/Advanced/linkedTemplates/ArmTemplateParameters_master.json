@@ -5,13 +5,13 @@
         "factoryName": {
             "value": "mdwhack-advanced"
         },
-        "ADLS_accountKey": {
+        "WideWorldImporters_connectionString": {
             "value": ""
         },
         "AzureSynapseAnalytics_connectionString": {
             "value": ""
         },
-        "WideWorldImporters_connectionString": {
+        "ADLS_accountKey": {
             "value": ""
         },
         "ADLS_properties_typeProperties_url": {

@@ -3,16 +3,25 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "factoryName": {
-            "value": "mdwhack-advanced"
+            "value": "akMDWHackBasic"
+        },
+        "AzureDataLakeStorage1_accountKey": {
+            "value": ""
+        },
+        "WideWorldImportersDW_connectionString": {
+            "value": ""
         },
         "WideWorldImporters_connectionString": {
+            "value": ""
+        },
+        "AzureSynapseAnalytics_connectionString": {
             "value": ""
         },
         "ADLS_accountKey": {
             "value": ""
         },
-        "AzureSynapseAnalytics_connectionString": {
-            "value": ""
+        "AzureDataLakeStorage1_properties_typeProperties_url": {
+            "value": "https://mdwhackbasic.dfs.core.windows.net"
         },
         "ADLS_properties_typeProperties_url": {
             "value": "https://mdwhackadvanced.dfs.core.windows.net"
