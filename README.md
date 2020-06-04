@@ -40,10 +40,10 @@ In this hack, data engineers will learn how to migrate their platform to the clo
 - Azure CLI
 - Download WorldWide Importers Database (OLTP & OLAP)
 
-## Repository Contents (Optional)
-- `../Host/Guides`
-  - Coach's Guide for challenge
-  - Solution files for challenge
+## Repository Contents
+- `../Coach/Solutions`
+  - Coach's Guide for challenges
+  - Solution files for challenges
 - `../Student`
   - Student's Challenge Guide
 - `../images`
