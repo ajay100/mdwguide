@@ -5,17 +5,23 @@
         "factoryName": {
             "value": "akMDWHackBasic"
         },
-        "WideWorldImporters_connectionString": {
-            "value": ""
-        },
         "AzureDataLakeStorage1_accountKey": {
             "value": ""
         },
         "WideWorldImportersDW_connectionString": {
             "value": ""
         },
+        "WideWorldImporters_connectionString": {
+            "value": ""
+        },
         "AzureDataLakeStorage1_properties_typeProperties_url": {
             "value": "https://mdwhackbasic.dfs.core.windows.net"
+        },
+        "containerUri": {
+            "value": ""
+        },
+        "containerSasToken": {
+            "value": ""
         }
     }
 }

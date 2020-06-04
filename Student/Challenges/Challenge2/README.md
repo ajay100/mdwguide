@@ -10,6 +10,50 @@ The objective of this challenge is to build a Data Lake with Azure Data Lake Sto
 
 Note: This challenge is intended to build upon challenge 1, and you should try to reuse content wherever possible.
 
+## Setup
+Prior to starting this challenge, you should ensure that there are changes in the City data captured from Wide World Importers OLTP Database.  Execute the script below to insert/change data in the source, and update necessary configuration values.
+
+1. Execute queries below in the Wide World Importers Database to update 10 existing records and insert 1 new record. 
+~~~~
+UPDATE T
+SET [LatestRecordedPopulation] = LatestRecordedPopulation + 1000
+FROM (SELECT TOP 10 * from [Application].[Cities]) T
+
+INSERT INTO [Application].[Cities]
+	(
+        [CityName]
+        ,[StateProvinceID]
+        ,[Location]
+        ,[LatestRecordedPopulation]
+        ,[LastEditedBy]
+	)
+    VALUES
+    (
+		'NewCity' + CONVERT(char(19), getdate(), 121)
+        ,1
+        ,NULL
+        , 1000
+        ,1
+	)
+;
+
+2. Modify the [Integration].[GetCityUpdates] stored procedure in the same OLTP database to remove the Location field from the result set returned.  
+~~~~
+SELECT [WWI City ID], City, [State Province], Country, Continent, [Sales Territory],
+           Region, Subregion,
+
+		   -- [Location] geography,                       -->Remove due to data type compatibility issues
+
+		   [Latest Recorded Population], [Valid From],
+           [Valid To]
+    FROM #CityChanges
+    ORDER BY [Valid From];
+
+2. Execute the query below in the Azure Synapse DW database to update the parameter used as the upper bound for the ELT process:
+
+UPDATE INTEGRATION.LOAD_CONTROL
+SET LOAD_DATE = getdate()
+
 ## Success Criteria
 1. Deploy a new storage account resource.
 2. Define directory structure to support data lake use cases as follows:
@@ -26,6 +70,8 @@ Note: This challenge is intended to build upon challenge 1, and you should try t
     - Lookup activity that queries [Integration].[Load Control] table in your Synapse DW to get the current refresh date. This result will be used as the @NewCutoff parameter in your copy activity. The NewCutoff is similar to your End Date in a range query.
     - Copy Data activity that uses the [Integration].[GetCityUpdates] stored procedure in your WideWorldImporters OLTP database as your source, and the .\IN\WWIDW\City\ directory as the sink 
     <br><b>Note: You will need to modify this stored procedure to ensure that the [Location] field is excluded from the results.  Otherwise this data will cause errors due to incompatibility with Azure Data Factory</b>
+6. Once you have executed your new pipeline, there should be a .txt file with the 11 updated records from the City table in the \In\WWIDW\City\ folder of your data lake.
+<br><b>Note: you can execute your new pipeline by clicking the "Debug" button or adding a trigger from the UI designer.</b>
 
 ## Stage 2 Architecture
 ![The Solution diagram is described in the text following this diagram.](/images/Challenge2.png)
