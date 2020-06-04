@@ -5,7 +5,7 @@
         "factoryName": {
             "type": "string",
             "metadata": "Data Factory name",
-            "defaultValue": "mdwhackadvanced"
+            "defaultValue": "mdwhack-advanced"
         }
     },
     "variables": {
@@ -13,7 +13,7 @@
     },
     "resources": [
         {
-            "name": "[concat(parameters('factoryName'), '/mdwhackadvanced')]",
+            "name": "[concat(parameters('factoryName'), '/mdwhack-advanced')]",
             "type": "Microsoft.DataFactory/factories",
             "apiVersion": "2018-06-01",
             "properties": {},

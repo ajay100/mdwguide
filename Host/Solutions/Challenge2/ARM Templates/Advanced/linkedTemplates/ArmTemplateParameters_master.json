@@ -8,10 +8,10 @@
         "WideWorldImporters_connectionString": {
             "value": ""
         },
-        "ADLS_accountKey": {
+        "AzureSynapseAnalytics_connectionString": {
             "value": ""
         },
-        "AzureSynapseAnalytics_connectionString": {
+        "ADLS_accountKey": {
             "value": ""
         },
         "ADLS_properties_typeProperties_url": {

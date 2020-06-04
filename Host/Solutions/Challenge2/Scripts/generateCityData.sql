@@ -1,3 +1,5 @@
+/******* EXECUTE IN WIDE WORLD IMPORTERS OLTP DATABASE ***********/
+
 --Update 10 existing records
 UPDATE T
 SET [LatestRecordedPopulation] = LatestRecordedPopulation + 1000
@@ -14,7 +16,7 @@ INSERT INTO [Application].[Cities]
 	)
     VALUES
     (
-		'NewCity' + CONVERT(char(8), getdate(), 112)
+		'NewCity' + CONVERT(char(19), getdate(), 121)
         ,1
         ,NULL
         , 1000
@@ -23,3 +25,4 @@ INSERT INTO [Application].[Cities]
 ;
 
 
+/***** DON'T FORGET TO UPDATE LOAD_CONFIG TABLE **********/

@@ -3,7 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "factoryName": {
-            "value": "mdwhackadvanced"
+            "value": "mdwhack-advanced"
+        },
+        "ADLS_accountKey": {
+            "value": ""
         },
         "AzureSynapseAnalytics_connectionString": {
             "value": ""
@@ -11,11 +14,8 @@
         "WideWorldImporters_connectionString": {
             "value": ""
         },
-        "ADLS_accountKey": {
-            "value": ""
-        },
         "ADLS_properties_typeProperties_url": {
-            "value": "https://mdwhack.dfs.core.windows.net"
+            "value": "https://mdwhackadvanced.dfs.core.windows.net"
         },
         "containerUri": {
             "value": ""
