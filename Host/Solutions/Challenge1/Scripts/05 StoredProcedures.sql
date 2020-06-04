@@ -971,7 +971,7 @@ GO
 DROP PROCEDURE [Integration].[Configuration_ReseedETL]
 GO
 
-/****** Object:  StoredProcedure [Integration].[Configuration_ReseedETL]    Script Date: 5/27/2020 9:12:56 PM ******/
+/****** Object:  StoredProcedure [Integration].[Configuration_ReseedETL]    Script Date: 6/03/2020 5:08:56 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -996,9 +996,12 @@ BEGIN
 
 
 
-	UPDATE Integration.[Load_Control]
+IF EXISTS(select * from [Integration].[Load_Control])
+   update Integration.[Load_Control] 
+		SET [Load_Date] = @EndingETLCutoffTime
+ELSE
+   insert into Integration.[Load_Control] values(@EndingETLCutoffTime);
 
-		SET [Load_Date] = @EndingETLCutoffTime;
 
 	UPDATE Integration.[ETL Cutoff]
 
