@@ -32,7 +32,7 @@ Create a data pipeline for the [Dimension].[City] table considering logic above.
 1. Test your new Azure Data Factory Pipeline.  You can execute your pipeline by clicking on "Debug" or adding a Trigger in the design UI.  If done correctly, the 11 new records loaded into the City data should have been loaded into the [Dimension].[City] table in the Azure Synapse Analytics DW.  
 
 ## Stage 3 Architecture
-![The Solution diagram is described in the text following this diagram.](/images/Challenge3.png)
+![The Solution diagram is described in the text following this diagram.](../../../images/Challenge3.png)
 
 ## Learning Resources
 1. [Load data into DW via Polybase](https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/load-data-from-azure-blob-storage-using-polybase)
