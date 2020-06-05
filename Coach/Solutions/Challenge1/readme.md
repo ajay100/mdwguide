@@ -150,3 +150,6 @@ A coach's suggestion is to have your team setup two enviroments for this challen
 
 ## Congratulations!!! 
 The migration is complete.  Run your SSIS jobs to load data from OLTP to OLAP data warehouse.  You might want to create a load control table to setup incremental loads.  This will validate you've completed all steps successfully.  Compare the results of the WWI OLAP database vs. the one you've migrated into Azure Synapse Analytics.
+
+## Solutions
+[Go to Solution Files]((./Challenge1))
