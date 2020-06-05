@@ -69,6 +69,3 @@ These templates can be used to deploy resources required to complete this soluti
 
 1. Basic -- Folder contains ARM Template for all objects included in Azure Data Factory including pipelines for one pipeline only.  Success Criteria for Challenge 3
 1. Advanced -- Folder contains ARM Template for all object included in Azure Data Factory including pipeline to load all tables.  Solution for Additional Challenge
-
-## Solutions
-[Go to Solution Files]((./Challenge3))

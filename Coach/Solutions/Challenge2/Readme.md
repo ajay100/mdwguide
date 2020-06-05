@@ -93,6 +93,3 @@ SET LOAD_DATE = getdate()
                 - FOREACH Activity
                     - iterate over list of tables
                     - Execute Pipeline task to execute pipeline create above (Note: you will need to pass in table name as parameter)
-
-## Solutions
-[Go to Solution Files]((./Challenge2))

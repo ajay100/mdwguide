@@ -52,6 +52,3 @@ Execute the Databricks notebook configured above to create streaming dataset, an
 
 ## Query the Data
 Have the team reuse the queries in the Databricks notebook and create an aggregate query to show their SQL, Scala or Python skills.  This is a standalone table and doesn't directly integrate into Azure Synapse Analytics.
-
-## Solutions
-[Go to Solution Files]((./Challenge4))
