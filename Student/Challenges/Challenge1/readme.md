@@ -1,6 +1,6 @@
 # Challenge 1 -- Data Warehouse Migration
 
-[< Previous Challenge](/Student/Challenges/Challenge0/readme.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](/Student/Challenges/Challenge2/README.md)
+[< Previous Challenge](../Challenge0/readme.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](../Challenge2/README.md)
 
 ## Introduction
 
@@ -35,7 +35,7 @@ There will be four different object types we'll migrate:
     - Compare run counts against OLAP database
 
 ## Stage 1 Architecture
-![The Solution diagram is described in the text following this diagram.](/images/Challenge1.png)
+![The Solution diagram is described in the text following this diagram.](../../../images/Challenge1.png)
 
 ## Learning Resources
 

@@ -1,6 +1,6 @@
 # 	Challenge 2 -- Data Lake integration
 
-[< Previous Challenge](/Student/Challenges/Challenge1/readme.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](/Student/Challenges/Challenge3/README.md)
+[< Previous Challenge](../Challenge1/readme.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](../Challenge3/README.md)
 
 ## Introduction
 WWI importers realize they need to further modernize their data warehouse and wants to proceed to the second stage.  They are starting to reach capacity constraints on their data warehouse and need to offload data files from the relational database.  Likewise, they are receiving more data in json and csv file formats.  They've been discussing re-engineering their data warehouse to accomodate larger data sets, semi-structured data and real-time ingestion of data.  They like to conduct a POC on the Data Lake and see how to best to design it for integration into the Data Warehouse.  For this challenge, WWI wants us to build out the data lake and show how to load data into the lake from an on-premise data source. 
@@ -74,7 +74,7 @@ SET LOAD_DATE = getdate()
 <br><b>Note: you can execute your new pipeline by clicking the "Debug" button or adding a trigger from the UI designer.</b>
 
 ## Stage 2 Architecture
-![The Solution diagram is described in the text following this diagram.](/images/Challenge2.png)
+![The Solution diagram is described in the text following this diagram.](../../../images/Challenge2.png)
 
 ## Learning Resources
 1. [Begin by creating a new Azure Storage account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&tabs=azure-portal).
