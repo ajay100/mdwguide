@@ -10,9 +10,7 @@ WWI leadership team wants to leverage Power BI to create rich semantic models to
 The objective of this lab is to have the Power BI report "WWI_Sales.pbix" to return in less than 5 seconds.  This will require you to optimize the Power BI data model and report.  Secondly, you will need to tune the Azure Synapse database to ensure your table design is setup properly and you have setup statistics and results-set cache.  After completion, review your results with the coach to determine optimal design.
 
 ## Success Criteria
-* Reduce Response time to less than 10 seconds thru changes to the Power BI Data Model.
-    1. Experiment with DirectQuery and Composite model in Power BI Desktop for optimal performance. Determine which table(s) are best in dual mode.  Open Performance Analyzer in Power BI Desktop to capture the runtimes.
-* Reduce Response time to less than 10 seconds thru removing SKU in Azure Synapse Analytics tables.
+* Reduce Response time to less than 10 seconds thru removing skew in Azure Synapse Analytics tables.
     1. Run "skew.pbix" in student directory to review skew in your Azure Synapse Analytics platform.  
     1. Review each table distribution to ensure you have the right type for each schema.  
     1. Fix skew in any table leveraging Create Table as Select.
@@ -26,6 +24,8 @@ The objective of this lab is to have the Power BI report "WWI_Sales.pbix" to ret
     1. Capture baseline runtimes from the performance analyzer for all visuals in "High Level Dashboard".
     1. Run statistics on all tables in Synapse.  Rerun performance analyzer and compare them with Step 1 to see gains.
     1. Turn on Result-set cache. The first run of performance analyzer will be high but the second run should be a big improvement from the baseline from the first step.
+* Reduce Response time to less than 10 seconds thru changes to the Power BI Data Model.
+    1. Experiment with DirectQuery and Composite model in Power BI Desktop for optimal performance. Determine which table(s) are best in dual mode.  Open Performance Analyzer in Power BI Desktop to capture the runtimes.
     
 ## Learning resources
 
@@ -37,6 +37,7 @@ The objective of this lab is to have the Power BI report "WWI_Sales.pbix" to ret
 | Power BI Composite Model |<https://docs.microsoft.com/en-us/power-bi/transform-model/desktop-composite-models>|
 | Power BI change table storage mode| <https://docs.microsoft.com/en-us/power-bi/transform-model/desktop-storage-mode>|
 | Table skew | <https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute#how-to-tell-if-your-distribution-column-is-a-good-choice> |
+| Table skew workflow | <https://github.com/rgl/azure-content/blob/master/articles/sql-data-warehouse/sql-data-warehouse-manage-distributed-data-skew.md> |
 | Explain Plan | <https://docs.microsoft.com/en-us/sql/t-sql/queries/explain-transact-sql?view=azure-sqldw-latest> |
 | Result-set cache | <https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/performance-tuning-result-set-caching> |
 | Statistics | <https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-statistics#use-a-stored-procedure-to-create-statistics-on-all-columns-in-a-database> |
