@@ -68,7 +68,7 @@ There will be four different object types we'll migrate:
 1. [Deploy SSIS Package](https://docs.microsoft.com/en-us/sql/integration-services/lift-shift/ssis-azure-deploy-run-monitor-tutorial?view=sql-server-ver15)
 
 ### Data Setup in Synapse
-For the first time setup only, you will need to execute the "Master Create.sql" script to populate all control tables before you execute the SSIS job.  This is required and it only done on the initial setup.  Additionally, execute the Reseed ETL Stored Procedure to rollback environment to original state before you load the data.  The Reseed ETL Stored Procedure is your ability to rollback the database to it's original state.  You will need to rerun this Stored proc before each run of the SSIS job.
+For the first time setup only, you will need to execute the "Master Create.sql" script to populate all control tables before you execute the SSIS job.  This is required and it is only done on the initial setup.  After this is complete, you can run the SSIS job.  For all subsequent runs after the initial setup, execute the Reseed ETL Stored Procedure only.  This stored procedure will rollback the database to it's original state.
 
 ## Tips
 1. Determine your distribution column (HINT IDENTITY Column can not be your distribution key)
