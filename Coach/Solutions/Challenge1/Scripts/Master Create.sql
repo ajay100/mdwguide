@@ -1374,11 +1374,13 @@ BEGIN
 END;
 GO
 
-/****** Object:  StoredProcedure [Integration].[MigrateStagedOrderData]    Script Date: 4/9/2020 9:00:54 AM ******/
+/****** Object:  StoredProcedure [Integration].[MigrateStagedOrderData]    Script Date: 6/25/2020 4:19:53 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROC [Integration].[MigrateStagedOrderData] AS
 BEGIN
     SET NOCOUNT ON;
@@ -1394,44 +1396,44 @@ BEGIN
 
     -- Find the dimension keys required
 
- UPDATE Integration.Order_Staging
-        SET Integration.Order_Staging.[City Key] = COALESCE((SELECT TOP(1) c.[City Key]
+ UPDATE o
+        SET o.[City Key] = COALESCE((SELECT TOP(1) c.[City Key]
                                      FROM Dimension.City AS c
-                                     WHERE c.[WWI City ID] = Integration.Order_Staging.[WWI City ID]
-                                     AND Integration.Order_Staging.[Last Modified When] > c.[Valid From]
-                                     AND Integration.Order_Staging.[Last Modified When] <= c.[Valid To]
+                                     WHERE c.[WWI City ID] = o.[WWI City ID]
+                                     AND o.[Last Modified When] > c.[Valid From]
+                                     AND o.[Last Modified When] <= c.[Valid To]
 									 ORDER BY c.[Valid From]), 0),
-            Integration.Order_Staging.[Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
+            o.[Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
                                          FROM Dimension.Customer AS c
-                                         WHERE c.[WWI Customer ID] = Integration.Order_Staging.[WWI Customer ID]
-                                         AND Integration.Order_Staging.[Last Modified When] > c.[Valid From]
-                                         AND Integration.Order_Staging.[Last Modified When] <= c.[Valid To]
+                                         WHERE c.[WWI Customer ID] = o.[WWI Customer ID]
+                                         AND o.[Last Modified When] > c.[Valid From]
+                                         AND o.[Last Modified When] <= c.[Valid To]
     									 ORDER BY c.[Valid From]), 0),
-            Integration.Order_Staging.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
+            o.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
                                            FROM Dimension.[Stock Item] AS si
-                                           WHERE si.[WWI Stock Item ID] = Integration.Order_Staging.[WWI Stock Item ID]
-                                           AND Integration.Order_Staging.[Last Modified When] > si.[Valid From]
-                                           AND Integration.Order_Staging.[Last Modified When] <= si.[Valid To]
+                                           WHERE si.[WWI Stock Item ID] = o.[WWI Stock Item ID]
+                                           AND o.[Last Modified When] > si.[Valid From]
+                                           AND o.[Last Modified When] <= si.[Valid To]
 					                       ORDER BY si.[Valid From]), 0),
-            Integration.Order_Staging.[Salesperson Key] = COALESCE((SELECT TOP(1) e.[Employee Key]
+            o.[Salesperson Key] = COALESCE((SELECT TOP(1) e.[Employee Key]
                                          FROM Dimension.Employee AS e
-                                         WHERE e.[WWI Employee ID] = Integration.Order_Staging.[WWI Salesperson ID]
-                                         AND Integration.Order_Staging.[Last Modified When] > e.[Valid From]
-                                         AND Integration.Order_Staging.[Last Modified When] <= e.[Valid To]
+                                         WHERE e.[WWI Employee ID] = o.[WWI Salesperson ID]
+                                         AND o.[Last Modified When] > e.[Valid From]
+                                         AND o.[Last Modified When] <= e.[Valid To]
 									     ORDER BY e.[Valid From]), 0),
-            Integration.Order_Staging.[Picker Key] = COALESCE((SELECT TOP(1) e.[Employee Key]
+            o.[Picker Key] = COALESCE((SELECT TOP(1) e.[Employee Key]
                                        FROM Dimension.Employee AS e
-                                       WHERE e.[WWI Employee ID] = Integration.Order_Staging.[WWI Picker ID]
-                                       AND Integration.Order_Staging.[Last Modified When] > e.[Valid From]
-                                       AND Integration.Order_Staging.[Last Modified When] <= e.[Valid To]
-									   ORDER BY e.[Valid From]), 0);
+                                       WHERE e.[WWI Employee ID] = o.[WWI Picker ID]
+                                       AND o.[Last Modified When] > e.[Valid From]
+                                       AND o.[Last Modified When] <= e.[Valid To]
+									   ORDER BY e.[Valid From]), 0)
+    FROM Integration.Order_Staging AS o;
 
     -- Remove any existing entries for any of these orders
-
-    DELETE FROM Fact.[Order]
-    WHERE [WWI Order ID] IN (SELECT [WWI Order ID] FROM Integration.Order_Staging)
-	OPTION ( LABEL = N'CustomJoin', HASH JOIN ) ;
-
+	DELETE o
+    FROM Fact.[Order] AS o
+    WHERE o.[WWI Order ID] IN (SELECT [WWI Order ID] FROM Integration.Order_Staging);
+    
     -- Insert all current details for these orders
 
     INSERT Fact.[Order]
@@ -1523,11 +1525,13 @@ WITH RowsToCloseOff([WWI Payment Method ID], [Valid From])
 END;
 GO
 
-/****** Object:  StoredProcedure [Integration].[MigrateStagedPurchaseData]    Script Date: 4/9/2020 9:00:54 AM ******/
+/****** Object:  StoredProcedure [Integration].[MigrateStagedPurchaseData]    Script Date: 6/25/2020 4:20:51 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROC [Integration].[MigrateStagedPurchaseData] AS
 BEGIN
     SET NOCOUNT ON;
@@ -1543,25 +1547,26 @@ BEGIN
 
     -- Find the dimension keys required
 
-    UPDATE Integration.Purchase_Staging
-        SET Integration.Purchase_Staging.[Supplier Key] = COALESCE((SELECT TOP(1) s.[Supplier Key]
+    UPDATE p
+        SET p.[Supplier Key] = COALESCE((SELECT TOP(1) s.[Supplier Key]
                                      FROM Dimension.Supplier AS s
-                                     WHERE s.[WWI Supplier ID] = Integration.Purchase_Staging.[WWI Supplier ID]
-                                     AND Integration.Purchase_Staging.[Last Modified When] > s.[Valid From]
-                                     AND Integration.Purchase_Staging.[Last Modified When] <= s.[Valid To]
+                                     WHERE s.[WWI Supplier ID] = p.[WWI Supplier ID]
+                                     AND p.[Last Modified When] > s.[Valid From]
+                                     AND p.[Last Modified When] <= s.[Valid To]
 									 ORDER BY s.[Valid From]), 0),
-            Integration.Purchase_Staging.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
+            p.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
                                            FROM Dimension.[Stock Item] AS si
-                                           WHERE si.[WWI Stock Item ID] = Integration.Purchase_Staging.[WWI Stock Item ID]
-                                           AND Integration.Purchase_Staging.[Last Modified When] > si.[Valid From]
-                                           AND Integration.Purchase_Staging.[Last Modified When] <= si.[Valid To]
-									       ORDER BY si.[Valid From]), 0);
+                                           WHERE si.[WWI Stock Item ID] = p.[WWI Stock Item ID]
+                                           AND p.[Last Modified When] > si.[Valid From]
+                                           AND p.[Last Modified When] <= si.[Valid To]
+									       ORDER BY si.[Valid From]), 0)
+    FROM Integration.Purchase_Staging AS p;
 
     -- Remove any existing entries for any of these purchase orders
 
-    DELETE FROM Fact.Purchase
-    WHERE [WWI Purchase Order ID] IN (SELECT [WWI Purchase Order ID] FROM Integration.Purchase_Staging)
-	OPTION ( LABEL = N'CustomJoin', HASH JOIN );  
+    DELETE p
+    FROM Fact.Purchase AS p
+    WHERE p.[WWI Purchase Order ID] IN (SELECT [WWI Purchase Order ID] FROM Integration.Purchase_Staging);
 
     -- Insert all current details for these purchase orders
 
@@ -1590,11 +1595,13 @@ BEGIN
 END;
 GO
 
-/****** Object:  StoredProcedure [Integration].[MigrateStagedSaleData]    Script Date: 4/9/2020 9:00:54 AM ******/
+/****** Object:  StoredProcedure [Integration].[MigrateStagedSaleData]    Script Date: 6/25/2020 4:21:41 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROC [Integration].[MigrateStagedSaleData] AS
 BEGIN
     SET NOCOUNT ON;
@@ -1610,44 +1617,44 @@ BEGIN
 
 	-- Find the dimension keys required
 
-	UPDATE Integration.Sale_Staging
-        SET Integration.Sale_Staging.[City Key] = COALESCE((SELECT TOP(1) c.[City Key]
+	UPDATE s
+        SET s.[City Key] = COALESCE((SELECT TOP(1) c.[City Key]
                                      FROM Dimension.City AS c
-                                     WHERE c.[WWI City ID] = Integration.Sale_Staging.[WWI City ID]
-                                     AND Integration.Sale_Staging.[Last Modified When] > c.[Valid From]
-                                     AND Integration.Sale_Staging.[Last Modified When] <= c.[Valid To]
+                                     WHERE c.[WWI City ID] = s.[WWI City ID]
+                                     AND s.[Last Modified When] > c.[Valid From]
+                                     AND s.[Last Modified When] <= c.[Valid To]
 									 ORDER BY c.[Valid From]), 0),
-            Integration.Sale_Staging.[Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
+            s.[Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
                                            FROM Dimension.Customer AS c
-                                           WHERE c.[WWI Customer ID] = Integration.Sale_Staging.[WWI Customer ID]
-                                           AND Integration.Sale_Staging.[Last Modified When] > c.[Valid From]
-                                           AND Integration.Sale_Staging.[Last Modified When] <= c.[Valid To]
+                                           WHERE c.[WWI Customer ID] = s.[WWI Customer ID]
+                                           AND s.[Last Modified When] > c.[Valid From]
+                                           AND s.[Last Modified When] <= c.[Valid To]
 									       ORDER BY c.[Valid From]), 0),
-            Integration.Sale_Staging.[Bill To Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
+            s.[Bill To Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
                                                  FROM Dimension.Customer AS c
-                                                 WHERE c.[WWI Customer ID] = Integration.Sale_Staging.[WWI Bill To Customer ID]
-                                                 AND Integration.Sale_Staging.[Last Modified When] > c.[Valid From]
-                                                 AND Integration.Sale_Staging.[Last Modified When] <= c.[Valid To]
+                                                 WHERE c.[WWI Customer ID] = s.[WWI Bill To Customer ID]
+                                                 AND s.[Last Modified When] > c.[Valid From]
+                                                 AND s.[Last Modified When] <= c.[Valid To]
 									             ORDER BY c.[Valid From]), 0),
-            Integration.Sale_Staging.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
+            s.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
                                            FROM Dimension.[Stock Item] AS si
-                                           WHERE si.[WWI Stock Item ID] = Integration.Sale_Staging.[WWI Stock Item ID]
-                                           AND Integration.Sale_Staging.[Last Modified When] > si.[Valid From]
-                                           AND Integration.Sale_Staging.[Last Modified When] <= si.[Valid To]
+                                           WHERE si.[WWI Stock Item ID] = s.[WWI Stock Item ID]
+                                           AND s.[Last Modified When] > si.[Valid From]
+                                           AND s.[Last Modified When] <= si.[Valid To]
 									       ORDER BY si.[Valid From]), 0),
-            Integration.Sale_Staging.[Salesperson Key] = COALESCE((SELECT TOP(1) e.[Employee Key]
+            s.[Salesperson Key] = COALESCE((SELECT TOP(1) e.[Employee Key]
                                             FROM Dimension.Employee AS e
-                                            WHERE e.[WWI Employee ID] = Integration.Sale_Staging.[WWI Salesperson ID]
-                                            AND Integration.Sale_Staging.[Last Modified When] > e.[Valid From]
-                                            AND Integration.Sale_Staging.[Last Modified When] <= e.[Valid To]
-									        ORDER BY e.[Valid From]), 0);
+                                            WHERE e.[WWI Employee ID] = s.[WWI Salesperson ID]
+                                            AND s.[Last Modified When] > e.[Valid From]
+                                            AND s.[Last Modified When] <= e.[Valid To]
+									        ORDER BY e.[Valid From]), 0)
+    FROM Integration.Sale_Staging AS s;
 
     -- Remove any existing entries for any of these invoices
 
-	DELETE FROM Fact.Sale
-	WHERE [WWI Invoice ID] IN(   
-	SELECT [WWI Invoice ID] FROM Integration.Sale_Staging)  
-	OPTION ( LABEL = N'CustomJoin', HASH JOIN ) ;  
+	DELETE s
+    FROM Fact.Sale AS s
+    WHERE s.[WWI Invoice ID] IN (SELECT [WWI Invoice ID] FROM Integration.Sale_Staging);
 
 
     -- Insert all current details for these invoices
@@ -1679,17 +1686,19 @@ BEGIN
 END;
 GO
 
-/****** Object:  StoredProcedure [Integration].[MigrateStagedStockHoldingData]    Script Date: 4/9/2020 9:00:54 AM ******/
+/****** Object:  StoredProcedure [Integration].[MigrateStagedStockHoldingData]    Script Date: 6/25/2020 4:23:07 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROC [Integration].[MigrateStagedStockHoldingData] AS
 BEGIN
     SET NOCOUNT ON;
     SET XACT_ABORT ON;
 
-    TRUNCATE TABLE Fact.[Stock Holding];
+	TRUNCATE TABLE Fact.[Stock Holding];
 
     BEGIN TRAN;
 
@@ -1701,11 +1710,12 @@ BEGIN
 
     -- Find the dimension keys required
 
-	UPDATE Integration.StockHolding_Staging
-    SET Integration.StockHolding_Staging.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
-				                                            FROM Dimension.[Stock Item] AS si
-									                        WHERE si.[WWI Stock Item ID] = Integration.StockHolding_Staging.[WWI Stock Item ID]
-													        ORDER BY si.[Valid To] DESC), 0);
+	UPDATE s
+        SET s.[Stock Item Key] = COALESCE((SELECT TOP(1) si.[Stock Item Key]
+                                           FROM Dimension.[Stock Item] AS si
+                                           WHERE si.[WWI Stock Item ID] = s.[WWI Stock Item ID]
+                                           ORDER BY si.[Valid To] DESC), 0)
+    FROM Integration.StockHolding_Staging AS s;
 
     -- Remove all existing holdings
 
@@ -1865,11 +1875,13 @@ BEGIN
 END;
 GO
 
-/****** Object:  StoredProcedure [Integration].[MigrateStagedTransactionData]    Script Date: 4/9/2020 9:00:54 AM ******/
+/****** Object:  StoredProcedure [Integration].[MigrateStagedTransactionData]    Script Date: 6/25/2020 4:24:10 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 CREATE PROC [Integration].[MigrateStagedTransactionData] AS
 BEGIN
     SET NOCOUNT ON;
@@ -1885,37 +1897,38 @@ BEGIN
 
     -- Find the dimension keys required
 
-    UPDATE Integration.Transaction_Staging
-        SET Integration.Transaction_Staging.[Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
+     UPDATE t
+        SET t.[Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
                                          FROM Dimension.Customer AS c
-                                         WHERE c.[WWI Customer ID] = Integration.Transaction_Staging.[WWI Customer ID]
-                                         AND Integration.Transaction_Staging.[Last Modified When] > c.[Valid From]
-                                         AND Integration.Transaction_Staging.[Last Modified When] <= c.[Valid To]
+                                         WHERE c.[WWI Customer ID] = t.[WWI Customer ID]
+                                         AND t.[Last Modified When] > c.[Valid From]
+                                         AND t.[Last Modified When] <= c.[Valid To]
 									     ORDER BY c.[Valid From]), 0),
-            Integration.Transaction_Staging.[Bill To Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
+            t.[Bill To Customer Key] = COALESCE((SELECT TOP(1) c.[Customer Key]
                                                  FROM Dimension.Customer AS c
-                                                 WHERE c.[WWI Customer ID] = Integration.Transaction_Staging.[WWI Bill To Customer ID]
-                                                 AND Integration.Transaction_Staging.[Last Modified When] > c.[Valid From]
-                                                 AND Integration.Transaction_Staging.[Last Modified When] <= c.[Valid To]
+                                                 WHERE c.[WWI Customer ID] = t.[WWI Bill To Customer ID]
+                                                 AND t.[Last Modified When] > c.[Valid From]
+                                                 AND t.[Last Modified When] <= c.[Valid To]
 									             ORDER BY c.[Valid From]), 0),
-            Integration.Transaction_Staging.[Supplier Key] = COALESCE((SELECT TOP(1) s.[Supplier Key]
+            t.[Supplier Key] = COALESCE((SELECT TOP(1) s.[Supplier Key]
                                          FROM Dimension.Supplier AS s
-                                         WHERE s.[WWI Supplier ID] = Integration.Transaction_Staging.[WWI Supplier ID]
-                                         AND Integration.Transaction_Staging.[Last Modified When] > s.[Valid From]
-                                         AND Integration.Transaction_Staging.[Last Modified When] <= s.[Valid To]
+                                         WHERE s.[WWI Supplier ID] = t.[WWI Supplier ID]
+                                         AND t.[Last Modified When] > s.[Valid From]
+                                         AND t.[Last Modified When] <= s.[Valid To]
 									     ORDER BY s.[Valid From]), 0),
-            Integration.Transaction_Staging.[Transaction Type Key] = COALESCE((SELECT TOP(1) tt.[Transaction Type Key]
+            t.[Transaction Type Key] = COALESCE((SELECT TOP(1) tt.[Transaction Type Key]
                                                  FROM Dimension.[Transaction Type] AS tt
-                                                 WHERE tt.[WWI Transaction Type ID] = Integration.Transaction_Staging.[WWI Transaction Type ID]
-                                                 AND Integration.Transaction_Staging.[Last Modified When] > tt.[Valid From]
-                                                 AND Integration.Transaction_Staging.[Last Modified When] <= tt.[Valid To]
+                                                 WHERE tt.[WWI Transaction Type ID] = t.[WWI Transaction Type ID]
+                                                 AND t.[Last Modified When] > tt.[Valid From]
+                                                 AND t.[Last Modified When] <= tt.[Valid To]
 									             ORDER BY tt.[Valid From]), 0),
-            Integration.Transaction_Staging.[Payment Method Key] = COALESCE((SELECT TOP(1) pm.[Payment Method Key]
+            t.[Payment Method Key] = COALESCE((SELECT TOP(1) pm.[Payment Method Key]
                                                  FROM Dimension.[Payment Method] AS pm
-                                                 WHERE pm.[WWI Payment Method ID] = Integration.Transaction_Staging.[WWI Payment Method ID]
-                                                 AND Integration.Transaction_Staging.[Last Modified When] > pm.[Valid From]
-                                                 AND Integration.Transaction_Staging.[Last Modified When] <= pm.[Valid To]
-									             ORDER BY pm.[Valid From]), 0);
+                                                 WHERE pm.[WWI Payment Method ID] = t.[WWI Payment Method ID]
+                                                 AND t.[Last Modified When] > pm.[Valid From]
+                                                 AND t.[Last Modified When] <= pm.[Valid To]
+									             ORDER BY pm.[Valid From]), 0)
+    FROM Integration.Transaction_Staging AS t;
 
     -- Insert all the transactions
 
