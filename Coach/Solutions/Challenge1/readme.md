@@ -124,7 +124,7 @@ There are numerous strategies and tools to migrate your data from on-premise to 
 
 
 ### Data Setup in Synapse
-For the first time setup only, you will need to execute the "Master Create.sql" script to populate all control tables before you execute the SSIS job.  This is required and it is only done on the initial setup.  Additionally, execute the Reseed ETL Stored Procedure to rollback environment to original state before you load the data.  The Reseed ETL Stored Procedure is your ability to rollback the database to it's original state.  You will need to rerun this Stored proc before each run of the SSIS job.
+For the first time setup only, you will need to execute the "Master Create.sql" script to populate all control tables before you execute the SSIS job.  This is required and it is only done on the initial setup.  After this is complete, you can run the SSIS job.  For all subsequent runs after the initial setup, execute the Reseed ETL Stored Procedure only.  This stored procedure will rollback the database to it's original state.  
 
 A coach's suggestion is to have your team setup two enviroments for this challenge; Dev and Test.  This way they can hack all they want in their dev environment and not worry about impacting the work they've done to date.  After each challenge they can promote their dev code or restore the solution files into their test environment.  This way you can ensure after each challenge their environment won't regress and prevent them from going to the next challenge.
 
