@@ -17,7 +17,7 @@ Build a streaming pipeline using Azure Event Hub to ingest simulated click strea
 ## Dataset
 
 ### Data Source
-In order to generate the source data stream for this exercise, you will need to execute sample .Net application (Step 3).  This code will randomly generate product related data, and write it to a Kafka endpoint on an Azure Event Hub.
+In order to generate the source data stream for this exercise, you will need to execute sample .Net application (Step 2).  This code will randomly generate product related data, and write it to a Kafka endpoint on an Azure Event Hub.
 (Note: this solution guide was built with an Event Hub named 'test'.  If you create an Event Hub with a different name, there may be further modifications required to configuration settings in order to successfully create your data stream.)
 
 ### Data Sink 
@@ -30,6 +30,7 @@ Follow Event Hub quickstart instructions [here](https://docs.microsoft.com/en-us
 
 **Step 2 - Set up and configure data source**
 Open and configure Click Stream Generator application found [here](https://github.com/alexkarasek/ClickStreamGenerator).  You will need to provide your host name and shared access policy key in the appsettings.json file.
+(Note: If you do not have Visual Studio or Visual Studio Code configured on your local machine, you may want to complete this step by installing Visual Studio on your new SQL Server VM)
 
 **Step 3 - Create Azure Data Lake Storage Account**
 Create a new ADLS Gen 2 storage account (or new folder in existing storage account) in your Resource Group.  This will be used as the backend storage for Delta Lake tables created in subsequent steps.
