@@ -63,7 +63,7 @@ SET LOAD_DATE = getdate()
     - .\CURATED\WWIDB\ [TABLE]\{YY}\{MM}\{DD}\
 3. Configure folder level security in your new data lake storage 
     - only your ETL job should be able to write to your \IN directory
-    - you should be able to grant individual access to users who may want to access your \Out directory based on AAD credentials
+    - you should be able to grant individual access to users who may want to access your \RAW directory based on AAD credentials
 4. Deploy Azure Data Factory 
 5. Create a pipeline to copy data into ADLS.  Your pipeline will need the following components:
     - Lookup Activity that queries the [Integration].[ETL Cutoff Table] in your Synapse DW to get the last refresh date for the City data. This result will be used as the @LastCutoff parameter in your copy activity.  The LastCutoff is similar to your Start Date in a range query.
