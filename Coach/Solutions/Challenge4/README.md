@@ -1,4 +1,4 @@
-# 	Challenge 4 --  Real-time Data Pipelines
+# Challenge 4 --  Real-time Data Pipelines
 
 [< Previous Challenge](../Challenge3/Readme.md)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Next Challenge>](../Challenge5/README.md)
 
@@ -6,7 +6,7 @@
 Worldwide importers wanted to build out their data warehouse to include clickstream data.  There are a number of online stores that the marketing department wants to track for campaign and online ads.  These marketing users want to monitor the clickstream data and have the ability to run exploratory data analysis to support ad-hoc research.  This data needs to be real-time so the campaigns and ads are timely based on user activity in the online stores.
 
 ## Tools
-1. Visual Studio 2019 or Visual Stuido Code
+1. Visual Studio 2019 or Visual Studio Code
 1. Azure Databricks Workspace
 1. Azure Event Hubs
 1. Solution contains the Azure Databricks notebook which should be shared with students.  We don't expect them to setup this notebook ahead of time.
@@ -18,6 +18,7 @@ Build a streaming pipeline using Azure Event Hub to ingest simulated click strea
 
 ### Data Source
 In order to generate the source data stream for this exercise, you will need to execute sample .Net application (Step 3).  This code will randomly generate product related data, and write it to a Kafka endpoint on an Azure Event Hub.
+(Note: this solution guide was built with an Event Hub named 'test'.  If you create an Event Hub with a different name, there may be further modifications required to configuration settings in order to successfully create your data stream.)
 
 ### Data Sink 
 Azure Databricks will be used to consume Event Hub, and write streaming data to Delta Lake tables stored in Azure Data Lake.
@@ -25,10 +26,10 @@ Azure Databricks will be used to consume Event Hub, and write streaming data to 
 ## Step by Step Guidance
 
 **Step 1 - Deploy Azure Event Hub**
-Follow Event Hub quickstart instructions [here](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create). 
+Follow Event Hub quickstart instructions [here](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create).
 
 **Step 2 - Set up and configure data source**
-Open and configure Click Stream Generator application found [here](https://github.com/alexkarasek/ClickStreamGenerator).  You will need to provide your host name and shared access policy key in the appsettings.json file.   
+Open and configure Click Stream Generator application found [here](https://github.com/alexkarasek/ClickStreamGenerator).  You will need to provide your host name and shared access policy key in the appsettings.json file.
 
 **Step 3 - Create Azure Data Lake Storage Account**
 Create a new ADLS Gen 2 storage account (or new folder in existing storage account) in your Resource Group.  This will be used as the backend storage for Delta Lake tables created in subsequent steps.
